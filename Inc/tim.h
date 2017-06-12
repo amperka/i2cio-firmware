@@ -59,8 +59,8 @@ typedef struct
 {
   TIM_HandleTypeDef *Htim;
   TIM_OC_InitTypeDef Cfg;
-  uint32_t channel;
-  bool isHwPwm;
+  uint32_t Channel;
+  bool IsHwPwm;
   uint8_t activeIRQChannelMask;
 } Tim_Ch_Type;
 
@@ -73,19 +73,10 @@ void InitTimers();
 
 extern void Error_Handler(void);
 
-/*
-void MX_TIM1_Init(void);
-void MX_TIM3_Init(void);
-void MX_TIM14_Init(void);
-void MX_TIM16_Init(void);
-void MX_TIM17_Init(void);
-*/
-
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                                                 
 
 /* USER CODE BEGIN Prototypes */
-void InitTimers();
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

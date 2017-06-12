@@ -106,13 +106,7 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
-/*
-  MX_TIM1_Init();
-  MX_TIM3_Init();
-  MX_TIM14_Init();
-  MX_TIM16_Init();
-  MX_TIM17_Init();
-*/
+
   InitTimers();
 
   MX_ADC_Init();

@@ -46,14 +46,12 @@ TIM_HandleTypeDef htim16;
 TIM_HandleTypeDef htim17;
 
 Tim_Ch_Type TimCh[GPIO_COUNT];
-//TIM_OC_InitTypeDef TimCh_cfg[GPIO_COUNT];
 
 /* TIM1 init function */
 void MX_TIM1_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-//  TIM_OC_InitTypeDef sConfigOC;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
@@ -97,29 +95,14 @@ void MX_TIM1_Init(void)
     TimCh[i].Cfg.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   }
 
-  TimCh[3].channel = TIM_CHANNEL_1;
-  TimCh[4].channel = TIM_CHANNEL_2;
-  TimCh[5].channel = TIM_CHANNEL_4;
+  TimCh[3].Channel = TIM_CHANNEL_1;
+  TimCh[4].Channel = TIM_CHANNEL_2;
+  TimCh[5].Channel = TIM_CHANNEL_4;
 
-  TimCh[3].isHwPwm = false;
-  TimCh[4].isHwPwm = false;
-  TimCh[5].isHwPwm = false;
-/*
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &TimCh[3].Cfg, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  TimCh[3].IsHwPwm = false;
+  TimCh[4].IsHwPwm = false;
+  TimCh[5].IsHwPwm = false;
 
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &TimCh[4].Cfg, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &TimCh[5].Cfg, TIM_CHANNEL_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-*/
   sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
   sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
@@ -138,7 +121,6 @@ void MX_TIM3_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-//  TIM_OC_InitTypeDef sConfigOC;
 
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 48;
@@ -184,43 +166,22 @@ void MX_TIM3_Init(void)
   TimCh[0].Cfg.OCFastMode = TimCh[6].Cfg.OCFastMode = 
   TimCh[8].Cfg.OCFastMode = TimCh[9].Cfg.OCFastMode = TIM_OCFAST_DISABLE;
 
-  TimCh[6].channel = TIM_CHANNEL_1;
-  TimCh[8].channel = TIM_CHANNEL_2;
-  TimCh[9].channel = TIM_CHANNEL_3;
-  TimCh[0].channel = TIM_CHANNEL_4;
+  TimCh[6].Channel = TIM_CHANNEL_1;
+  TimCh[8].Channel = TIM_CHANNEL_2;
+  TimCh[9].Channel = TIM_CHANNEL_3;
+  TimCh[0].Channel = TIM_CHANNEL_4;
 
-  TimCh[6].isHwPwm = false;
-  TimCh[8].isHwPwm = false;
-  TimCh[9].isHwPwm = false;
-  TimCh[0].isHwPwm = true;
-/*
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &TimCh[6].Cfg, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  TimCh[6].IsHwPwm = false;
+  TimCh[8].IsHwPwm = false;
+  TimCh[9].IsHwPwm = false;
+  TimCh[0].IsHwPwm = true;
 
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &TimCh[8].Cfg, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &TimCh[9].Cfg, TIM_CHANNEL_3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &TimCh[0].Cfg, TIM_CHANNEL_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-*/
 //  HAL_TIM_MspPostInit(&htim3);
 
 }
 /* TIM14 init function */
 void MX_TIM14_Init(void)
 {
-//  TIM_OC_InitTypeDef sConfigOC;
 
   htim14.Instance = TIM14;
   htim14.Init.Prescaler = 48;
@@ -243,14 +204,8 @@ void MX_TIM14_Init(void)
   TimCh[7].Cfg.Pulse = 0;
   TimCh[7].Cfg.OCPolarity = TIM_OCPOLARITY_HIGH;
   TimCh[7].Cfg.OCFastMode = TIM_OCFAST_DISABLE;
-  TimCh[7].channel = TIM_CHANNEL_1;
-  TimCh[7].isHwPwm = true;
-/*
-  if (HAL_TIM_PWM_ConfigChannel(&htim14, &TimCh[7].Cfg, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-*/
+  TimCh[7].Channel = TIM_CHANNEL_1;
+  TimCh[7].IsHwPwm = true;
 
 //  HAL_TIM_MspPostInit(&htim14);
 
@@ -258,7 +213,7 @@ void MX_TIM14_Init(void)
 /* TIM16 init function */
 void MX_TIM16_Init(void)
 {
-//  TIM_OC_InitTypeDef sConfigOC;
+
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim16.Instance = TIM16;
@@ -286,14 +241,9 @@ void MX_TIM16_Init(void)
   TimCh[2].Cfg.OCFastMode = TIM_OCFAST_DISABLE;
   TimCh[2].Cfg.OCIdleState = TIM_OCIDLESTATE_RESET;
   TimCh[2].Cfg.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  TimCh[2].channel = TIM_CHANNEL_1;
-  TimCh[2].isHwPwm = true;
-/*
-  if (HAL_TIM_PWM_ConfigChannel(&htim16, &TimCh[2].Cfg, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-*/
+  TimCh[2].Channel = TIM_CHANNEL_1;
+  TimCh[2].IsHwPwm = true;
+
   sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
   sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
@@ -312,7 +262,7 @@ void MX_TIM16_Init(void)
 /* TIM17 init function */
 void MX_TIM17_Init(void)
 {
-//  TIM_OC_InitTypeDef sConfigOC;
+
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim17.Instance = TIM17;
@@ -340,14 +290,9 @@ void MX_TIM17_Init(void)
   TimCh[1].Cfg.OCFastMode = TIM_OCFAST_DISABLE;
   TimCh[1].Cfg.OCIdleState = TIM_OCIDLESTATE_RESET;
   TimCh[1].Cfg.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  TimCh[1].channel = TIM_CHANNEL_1;
-  TimCh[1].isHwPwm = true;
-/*
-  if (HAL_TIM_PWM_ConfigChannel(&htim17, &TimCh[1].Cfg, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-*/
+  TimCh[1].Channel = TIM_CHANNEL_1;
+  TimCh[1].IsHwPwm = true;
+
   sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
   sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
@@ -544,7 +489,7 @@ void InitTimers()
   for (uint8_t i = 0; i < GPIO_COUNT; ++i){
     if (HAL_TIM_PWM_ConfigChannel(TimCh[i].Htim
                                 , &TimCh[i].Cfg
-                                , TimCh[i].channel)!= HAL_OK)
+                                , TimCh[i].Channel)!= HAL_OK)
     {
       Error_Handler();
     }
