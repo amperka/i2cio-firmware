@@ -6,6 +6,28 @@
 **/
 
 #include "pin.h"
+/**
+Start of predeclaration
+**/
+void setPwmFreq(uint16_t freq);
+uint16_t analogRead(uint8_t adcChNum);
+void portMode(uint16_t Port, PinMode Mode);
+uint16_t digitalReadPort();
+void digitalWritePort(uint16_t Port, bool Value);
+bool digitalRead(uint8_t Pin);
+void digitalWrite(uint8_t Pin, bool Value);
+void analogWrite(uint8_t Pin, uint16_t Value);
+void setPwmMode(uint8_t Pin);
+void resetPwmMode(uint8_t Pin);
+void setPinMode(uint8_t Pin, uint8_t Mode);
+PinMode getPinMode(uint8_t Pin);
+bool isTimChIntEnable(TIM_HandleTypeDef *htim, uint32_t Channel);
+bool isTimUpdIntEnable(TIM_HandleTypeDef *htim);
+bool isOnlyTimUpdIntEnable(TIM_HandleTypeDef *htim);
+
+/**
+End of predeclaration
+**/
 
 void setPwmFreq(uint16_t freq)
 {
@@ -18,11 +40,11 @@ uint16_t analogRead(uint8_t adcChNum)
 	uint16_t result = 0;
 	if (adcChNum < GPIO_COUNT)
 	{
-	  setPinMode(Pin, AnalogMode);
+	  setPinMode(adcChNum, AnalogMode);
 	}
 	if (adcChNum < ADC_COUNT)
 	{
-		result = adcValuse[adcChNum];
+		result = adcValues[adcChNum];
 	}
 	return result;
 }
@@ -50,6 +72,7 @@ uint16_t digitalReadPort()
 			result |= 1;
 		}
 	}
+	return result;
 }
 
 void digitalWritePort(uint16_t Port, bool Value)
@@ -72,7 +95,7 @@ bool digitalRead(uint8_t Pin)
 void digitalWrite(uint8_t Pin, bool Value)
 {
 	GPIO_PinState state;
-	if (value)
+	if (Value)
 	{
 		GPIO[Pin].Port->BSRR = GPIO[Pin].Cfg.Pin;
 		state = GPIO_PIN_SET;
@@ -131,14 +154,12 @@ void resetPwmMode(uint8_t Pin)
 	if (TimCh[Pin].IsHwPwm)
 	{
 		HAL_TIM_PWM_Stop(TimCh[Pin].Htim
-                    , &TimCh[Pin].Cfg
-                    , TimCh[Pin].Channel);
+                       , TimCh[Pin].Channel);
 	}
 	else
 	{
 		HAL_TIM_PWM_Stop_IT(TimCh[Pin].Htim
-                    , &TimCh[Pin].Cfg
-                    , TimCh[Pin].Channel);
+                          , TimCh[Pin].Channel);
   	TimCh[Pin].SwPwmPinMask = 0;
   	if (isOnlyTimUpdIntEnable(TimCh[Pin].Htim))
   	{
@@ -248,7 +269,7 @@ PinMode getPinMode(uint8_t Pin)
   return result;
 }
 
-bool isTimChIntEnable(TIM_TypeDef *htim, uint32_t Channel)
+bool isTimChIntEnable(TIM_HandleTypeDef *htim, uint32_t Channel)
 {
   bool result = false;
   uint32_t itReg = htim->Instance->DIER;
@@ -282,7 +303,7 @@ bool isTimChIntEnable(TIM_TypeDef *htim, uint32_t Channel)
   return result;
 }
 
-bool isTimUpdIntEnable(TIM_TypeDef *htim)
+bool isTimUpdIntEnable(TIM_HandleTypeDef *htim)
 {
   bool result = false;
   uint32_t itReg = htim->Instance->DIER;
@@ -291,7 +312,7 @@ bool isTimUpdIntEnable(TIM_TypeDef *htim)
   return result;
 }
 
-bool isOnlyTimUpdIntEnable(TIM_TypeDef *htim)
+bool isOnlyTimUpdIntEnable(TIM_HandleTypeDef *htim)
 {
   bool result = false;
   uint32_t itReg = htim->Instance->DIER;
