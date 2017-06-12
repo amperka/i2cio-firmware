@@ -50,6 +50,8 @@ extern ADC_HandleTypeDef hadc;
 
 /* USER CODE BEGIN Private defines */
 
+extern uint16_t adcValues[ADC_COUNT];
+
 /* USER CODE END Private defines */
 
 extern void Error_Handler(void);

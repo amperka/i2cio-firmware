@@ -37,6 +37,7 @@
 #include "i2c.h"
 #include "tim.h"
 #include "gpio.h"
+#include "pin.h"
 
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"
@@ -248,74 +249,111 @@ void saveI2CAddress(uint8_t address) {
 }
 
 void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
-//    bool isOut;
-//    uint16_t port;
 
   uint8_t i = commandBuf[0];
   switch (i) {
 
     case WHO_AM_I:
-    setAnswerBuf_32(answerBuf, getUID());
+    {
+      setAnswerBuf_32(answerBuf, getUID());
+    }
     break;
 
     case RESET_ME:
-    NVIC_SystemReset();
+    {
+      NVIC_SystemReset();
+    }
     break;    
 
     case CHANGE_I2C_ADDR:
-    set_I2C_addr(addr = commandBuf[1]);
-    HAL_I2C_EnableListen_IT(&hi2c1);
+    {
+      set_I2C_addr(addr = commandBuf[1]);
+      HAL_I2C_EnableListen_IT(&hi2c1);
+    }
     break;
 
     case SAVE_I2C_ADDR:
-
-    if (addr!=getI2CAddress()) {
-      saveI2CAddress(addr);
+    {
+      if (addr!=getI2CAddress()) {
+        saveI2CAddress(addr);
+      }
     }
-
     break;
 
     case PORT_MODE_INPUT:
-//    MX_GPIO_Init_Mode_Inputs(concat2U8toU16(commandBuf[1],commandBuf[2]));
+    {
+      portMode(concat2U8toU16(commandBuf[1]
+                            , commandBuf[2])
+                            , InputMode);
+    }
     break;
 
     case PORT_MODE_PULLUP:
-//    MX_GPIO_Init_Mode_Pullups(concat2U8toU16(commandBuf[1],commandBuf[2]));
+    {
+      portMode(concat2U8toU16(commandBuf[1]
+                            , commandBuf[2])
+                            , PullUpMode);
+    }
     break;
-
+/*
+    case PORT_MODE_PULLDOWN: //TODO : add it to ioCommands
+    {
+      portMode(concat2U8toU16(commandBuf[1]
+                            , commandBuf[2])
+                            , PullDownMode);
+    }
+*/
     case PORT_MODE_OUTPUT:
-//    MX_GPIO_Init_Mode_Outputs(concat2U8toU16(commandBuf[1],commandBuf[2]));
+    {
+      portMode(concat2U8toU16(commandBuf[1]
+                            , commandBuf[2])
+                            , OutputMode);
+    }
     break;
 
     case DIGITAL_READ:
-//    setAnswerBuf_16(answerBuf, Digital_Read_Port());
+    {
+      setAnswerBuf_16(answerBuf, digitalReadPort());
+    }
     break;
 
     case DIGITAL_WRITE_HIGH:
-//    Digital_Write_Port_High(concat2U8toU16(commandBuf[1], commandBuf[2]));
+    {
+      digitalWritePort(concat2U8toU16(
+                                commandBuf[1]
+                              , commandBuf[2])
+                              , true);
+    }
     break;
 
     case DIGITAL_WRITE_LOW:
-//    Digital_Write_Port_Low(concat2U8toU16(commandBuf[1], commandBuf[2]));
+    {
+      digitalWritePort(concat2U8toU16(
+                                commandBuf[1]
+                              , commandBuf[2])
+                              , false);
+    }
     break;
 
     case PWM_FREQ:
-    answerBuf[0] = (uint8_t)i;
-
-//            pwmFreq(concat2U8toU16(commandBuf[1],commandBuf[2]));
+    {
+      setPwmFreq(concat2U8toU16(commandBuf[1]
+                              , commandBuf[2]));
+    }
     break;
 
     case ANALOG_WRITE:
-    answerBuf[0] = (uint8_t)i;
-
-//            analogWrite((uint8_t)commandBuf[1], (uint8_t)commandBuf[2]);
-
+    {
+      analogWrite(commandBuf[3]
+                , concat2U8toU16(commandBuf[1]
+                               , commandBuf[2]));
+    }
     break;
 
     case ANALOG_READ:
-    answerBuf[0] = (uint8_t)i;
-
-//            setAnswerBuf_16(analogRead( (uint8_t)commandBuf[1], (uint8_t)commandBuf[2] ));
+    {
+      setAnswerBuf_16(answerBuf, analogRead(commandBuf[1]));
+    }
     break;
   }
 }

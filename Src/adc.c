@@ -43,6 +43,8 @@
 
 ADC_HandleTypeDef hadc;
 
+uint16_t adcValues[ADC_COUNT];
+
 /* ADC init function */
 void MX_ADC_Init(void)
 {

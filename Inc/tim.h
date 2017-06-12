@@ -41,7 +41,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
 #include "main.h"
-#include <stdbool.h>
 
 /* USER CODE BEGIN Includes */
 
@@ -61,7 +60,7 @@ typedef struct
   TIM_OC_InitTypeDef Cfg;
   uint32_t Channel;
   bool IsHwPwm;
-  uint8_t activeIRQChannelMask;
+  uint32_t SwPwmPinMask;
 } Tim_Ch_Type;
 
 

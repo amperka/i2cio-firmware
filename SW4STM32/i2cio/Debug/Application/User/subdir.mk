@@ -8,6 +8,7 @@ D:/openstm32/i2c-io2/i2cio/Src/adc.c \
 D:/openstm32/i2c-io2/i2cio/Src/gpio.c \
 D:/openstm32/i2c-io2/i2cio/Src/i2c.c \
 D:/openstm32/i2c-io2/i2cio/Src/main.c \
+../Application/User/pin.c \
 D:/openstm32/i2c-io2/i2cio/Src/stm32f0xx_hal_msp.c \
 D:/openstm32/i2c-io2/i2cio/Src/stm32f0xx_it.c \
 D:/openstm32/i2c-io2/i2cio/Src/tim.c 
@@ -17,6 +18,7 @@ OBJS += \
 ./Application/User/gpio.o \
 ./Application/User/i2c.o \
 ./Application/User/main.o \
+./Application/User/pin.o \
 ./Application/User/stm32f0xx_hal_msp.o \
 ./Application/User/stm32f0xx_it.o \
 ./Application/User/tim.o 
@@ -26,6 +28,7 @@ C_DEPS += \
 ./Application/User/gpio.d \
 ./Application/User/i2c.d \
 ./Application/User/main.d \
+./Application/User/pin.d \
 ./Application/User/stm32f0xx_hal_msp.d \
 ./Application/User/stm32f0xx_it.d \
 ./Application/User/tim.d 
@@ -57,6 +60,14 @@ Application/User/i2c.o: D:/openstm32/i2c-io2/i2cio/Src/i2c.c
 	@echo ' '
 
 Application/User/main.o: D:/openstm32/i2c-io2/i2cio/Src/main.c
+	@echo 'Building file: $<'
+	@echo 'Invoking: MCU GCC Compiler'
+	@echo %cd%
+	arm-none-eabi-gcc -mcpu=cortex-m0 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F030x6 -I"D:/openstm32/i2c-io2/i2cio/Inc" -I"D:/openstm32/i2c-io2/i2cio/Drivers/STM32F0xx_HAL_Driver/Inc" -I"D:/openstm32/i2c-io2/i2cio/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy" -I"D:/openstm32/i2c-io2/i2cio/Drivers/CMSIS/Device/ST/STM32F0xx/Include" -I"D:/openstm32/i2c-io2/i2cio/Drivers/CMSIS/Include" -I"D:/openstm32/i2c-io2/i2cio/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+Application/User/%.o: ../Application/User/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo %cd%

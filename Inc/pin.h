@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : main.h
-  * Description        : This file contains the common defines of the application
+  * File Name          : TIM.h
+  * Description        : This file provides code for the configuration
+  *                      of the TIM instances.
   ******************************************************************************
   *
   * COPYRIGHT(c) 2017 STMicroelectronics
@@ -31,55 +32,41 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
+#ifndef __pin_H
+#define __pin_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
-/* USER CODE BEGIN Includes */
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f0xx_hal.h"
+#include "main.h"
+#include "gpio.h"
+#include "tim.h"
+#include "adc.h"
 
-#include <stdbool.h>
+/* USER CODE BEGIN */
+typedef enum {
+  InputMode
+  , PullUpMode
+  , PullDownMode
+  , OutputMode
+  , PwmMode
+  , AnalogMode
+} PinMode;
 
-/* USER CODE END Includes */
+void setPwmFreq(uint16_t freq);
+uint16_t analogRead(uint8_t adcChNum);
+uint16_t digitalReadPort();
+void digitalWritePort(uint16_t Port, bool Value);
+bool digitalRead(uint8_t Pin);
+void digitalWrite(uint8_t Pin, bool Value);
+void analogWrite(uint8_t Pin, uint16_t Value);
+void portMode(uint16_t Port, PinMode Mode);
 
-/* Private define ------------------------------------------------------------*/
+/* USER CODE END */
 
-/* USER CODE BEGIN Private defines */
-#define GPIO_COUNT 10
-#define ADC_COUNT  11
-
-#define P0_T3C4_H_Pin GPIO_PIN_1
-#define P1_T17C1_H_Pin GPIO_PIN_7
-#define P2_T16C1_H_Pin GPIO_PIN_6
-#define P3_T1C1_Pin GPIO_PIN_5
-#define P4_T1C2_Pin GPIO_PIN_0
-#define P5_T1C4_Pin GPIO_PIN_1
-#define P6_T3C1_Pin GPIO_PIN_2
-#define P7_T14C1_H_Pin GPIO_PIN_4
-#define P8_T3C2_Pin GPIO_PIN_3
-/* LED - P9_T3C3 */
-#define LED1_Pin GPIO_PIN_1
-#define P9_T3C3_Pin LED1_Pin
-
-#define P0_T3C4_H_GPIO_Port GPIOB
-#define P1_T17C1_H_GPIO_Port GPIOA
-#define P2_T16C1_H_GPIO_Port GPIOA
-#define P3_T1C1_GPIO_Port GPIOA
-#define P4_T1C2_GPIO_Port GPIOA
-#define P5_T1C4_GPIO_Port GPIOA
-#define P6_T3C1_GPIO_Port GPIOA
-#define P7_T14C1_H_GPIO_Port GPIOA
-#define P8_T3C2_GPIO_Port GPIOA
-#define LED1_GPIO_Port GPIOF
-#define P9_T3C3_GPIO_Port LED1_GPIO_Port
-/* USER CODE END Private defines */
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-*/ 
-
-#endif /* __MAIN_H */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#ifdef __cplusplus
+}
+#endif
+#endif /*__ pin_H */

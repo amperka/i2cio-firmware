@@ -57,11 +57,17 @@ GPIO_Type GPIO[GPIO_COUNT];
 void MX_GPIO_Init(void)
 {
 
-  for (uint8_t i = 0; i < GPIO_COUNT; ++i) {
-    GPIO[i].Cfg.Mode = GPIO_MODE_ANALOG;
+  for (uint8_t i = 0; i < GPIO_COUNT; ++i)
+  {
+    GPIO[i].Cfg.Mode = GPIO_MODE_INPUT;
     GPIO[i].Cfg.Pull = GPIO_NOPULL;
     GPIO[i].Cfg.Speed = GPIO_SPEED_FREQ_LOW;
   }
+
+  GPIO[0].Cfg.Alternate = GPIO_AF1_TIM3;
+  GPIO[1].Cfg.Alternate = GPIO_AF5_TIM17;
+  GPIO[2].Cfg.Alternate = GPIO_AF5_TIM16;
+  GPIO[7].Cfg.Alternate = GPIO_AF4_TIM14;
 
   GPIO[0].Cfg.Pin = P0_T3C4_H_Pin;
   GPIO[1].Cfg.Pin = P1_T17C1_H_Pin;
@@ -91,7 +97,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   GPIO[9].Cfg.Mode = GPIO_MODE_OUTPUT_PP;
-  HAL_GPIO_WritePin(GPIO[9].Port, P9_T3C3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIO[9].Port, GPIO[9].Cfg.Pin, GPIO_PIN_RESET);
   HAL_GPIO_Init(GPIO[9].Port, &GPIO[9].Cfg);
 
 /*

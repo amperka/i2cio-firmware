@@ -3,6 +3,7 @@
 "Application/User/gpio.o"
 "Application/User/i2c.o"
 "Application/User/main.o"
+"Application/User/pin.o"
 "Application/User/stm32f0xx_hal_msp.o"
 "Application/User/stm32f0xx_it.o"
 "Application/User/tim.o"
