@@ -2,6 +2,7 @@
 "Application/User/adc.o"
 "Application/User/gpio.o"
 "Application/User/i2c.o"
+"Application/User/interrupts.o"
 "Application/User/main.o"
 "Application/User/pin.o"
 "Application/User/stm32f0xx_hal_msp.o"

@@ -120,7 +120,7 @@ void analogWrite(uint8_t Pin, uint16_t Value)
 		{
 			digitalWrite(Pin, GPIO_PIN_RESET);
 		}
-		else if (Value >= TimCh[Pin].Cfg.Pulse)
+		else if (Value >= TimCh[Pin].Htim->Init.Period)
 		{
 			digitalWrite(Pin, GPIO_PIN_SET);
 		}
@@ -134,15 +134,21 @@ void analogWrite(uint8_t Pin, uint16_t Value)
 
 void setPwmMode(uint8_t Pin)
 {
+	HAL_TIM_PWM_ConfigChannel(TimCh[Pin].Htim
+                          , &TimCh[Pin].Cfg
+                          , TimCh[Pin].Channel);
 	if (TimCh[Pin].IsHwPwm)
 	{
-		HAL_TIM_PWM_ConfigChannel(TimCh[Pin].Htim
-                              , &TimCh[Pin].Cfg
-                              , TimCh[Pin].Channel);
     GPIO[Pin].Cfg.Mode = GPIO_MODE_AF_PP;
 	}
 	else
 	{
+		if (!isTimUpdIntEnable(TimCh[Pin].Htim))
+		{
+			HAL_TIM_Base_Start_IT(TimCh[Pin].Htim);
+		}
+		HAL_TIM_PWM_Start_IT(TimCh[Pin].Htim
+			                 , TimCh[Pin].Channel);
     GPIO[Pin].Cfg.Mode = GPIO_MODE_OUTPUT_PP;
     TimCh[Pin].SwPwmPinMask = GPIO[Pin].Cfg.Pin;
 	}
@@ -201,7 +207,7 @@ void setPinMode(uint8_t Pin, uint8_t Mode)
 	    case OutputMode:
 	    {
 	      GPIO[Pin].Cfg.Mode = GPIO_MODE_OUTPUT_PP;
-        GPIO[Pin].Cfg.Pull = GPIO_NOPULL;
+          GPIO[Pin].Cfg.Pull = GPIO_NOPULL;
 	    }
 	    break;
  	    case PwmMode:
@@ -212,7 +218,7 @@ void setPinMode(uint8_t Pin, uint8_t Mode)
 	    case AnalogMode:
 	    {
 	      GPIO[Pin].Cfg.Mode = GPIO_MODE_ANALOG;
-        GPIO[Pin].Cfg.Pull = GPIO_NOPULL;
+          GPIO[Pin].Cfg.Pull = GPIO_NOPULL;
 	    }
 	    break;
 	  }
@@ -229,8 +235,8 @@ PinMode getPinMode(uint8_t Pin)
   {
     case GPIO_MODE_INPUT:
     {
-    	if (pullMode == GPIO_NOPULL)
-    	{
+      if (pullMode == GPIO_NOPULL)
+      {
   	  	result = InputMode;
   	  }
   	  else if (pullMode == GPIO_PULLUP)

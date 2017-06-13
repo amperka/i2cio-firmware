@@ -38,6 +38,7 @@
 #include "tim.h"
 #include "gpio.h"
 #include "pin.h"
+#include "interrupts.h"
 
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"
@@ -344,9 +345,9 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
 
     case ANALOG_WRITE:
     {
-      analogWrite(commandBuf[3]
-                , concat2U8toU16(commandBuf[1]
-                               , commandBuf[2]));
+      analogWrite(commandBuf[1]
+                , concat2U8toU16(commandBuf[2]
+                               , commandBuf[3]));
     }
     break;
 

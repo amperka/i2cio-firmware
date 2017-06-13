@@ -7,6 +7,7 @@ C_SRCS += \
 D:/openstm32/i2c-io2/i2cio/Src/adc.c \
 D:/openstm32/i2c-io2/i2cio/Src/gpio.c \
 D:/openstm32/i2c-io2/i2cio/Src/i2c.c \
+../Application/User/interrupts.c \
 D:/openstm32/i2c-io2/i2cio/Src/main.c \
 ../Application/User/pin.c \
 D:/openstm32/i2c-io2/i2cio/Src/stm32f0xx_hal_msp.c \
@@ -17,6 +18,7 @@ OBJS += \
 ./Application/User/adc.o \
 ./Application/User/gpio.o \
 ./Application/User/i2c.o \
+./Application/User/interrupts.o \
 ./Application/User/main.o \
 ./Application/User/pin.o \
 ./Application/User/stm32f0xx_hal_msp.o \
@@ -27,6 +29,7 @@ C_DEPS += \
 ./Application/User/adc.d \
 ./Application/User/gpio.d \
 ./Application/User/i2c.d \
+./Application/User/interrupts.d \
 ./Application/User/main.d \
 ./Application/User/pin.d \
 ./Application/User/stm32f0xx_hal_msp.d \
@@ -59,7 +62,7 @@ Application/User/i2c.o: D:/openstm32/i2c-io2/i2cio/Src/i2c.c
 	@echo 'Finished building: $<'
 	@echo ' '
 
-Application/User/main.o: D:/openstm32/i2c-io2/i2cio/Src/main.c
+Application/User/%.o: ../Application/User/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo %cd%
@@ -67,7 +70,7 @@ Application/User/main.o: D:/openstm32/i2c-io2/i2cio/Src/main.c
 	@echo 'Finished building: $<'
 	@echo ' '
 
-Application/User/%.o: ../Application/User/%.c
+Application/User/main.o: D:/openstm32/i2c-io2/i2cio/Src/main.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo %cd%
