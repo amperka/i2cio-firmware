@@ -126,10 +126,21 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+/*    for (uint16_t i=0; i<=5;++i)
+    {
+      for (int y = 0; y < GPIO_COUNT; ++y)
+      {
+        analogWrite(y, i);
+      }
+     HAL_Delay(1000);
+    }
+    */
     if (recieveMessageFlag) {
       prepareAnswer(aRxBuffer, aTxBuffer);
       recieveMessageFlag = 0;
     }
+  
+
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -296,14 +307,14 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
                             , PullUpMode);
     }
     break;
-/*
+
     case PORT_MODE_PULLDOWN: //TODO : add it to ioCommands
     {
       portMode(concat2U8toU16(commandBuf[1]
                             , commandBuf[2])
                             , PullDownMode);
     }
-*/
+
     case PORT_MODE_OUTPUT:
     {
       portMode(concat2U8toU16(commandBuf[1]

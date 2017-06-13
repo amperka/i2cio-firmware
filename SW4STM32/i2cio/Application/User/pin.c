@@ -126,6 +126,29 @@ void analogWrite(uint8_t Pin, uint16_t Value)
 		}
 		else
 		{
+		  switch (TimCh[Pin].Channel)
+		  {
+		    case TIM_CHANNEL_1:
+		    {
+		    	TimCh[Pin].Htim->Instance->CCR1 = Value;
+		    }
+		    break;
+		    case TIM_CHANNEL_2:
+		    {
+		    	TimCh[Pin].Htim->Instance->CCR2 = Value;
+		    }
+		    break;
+		    case TIM_CHANNEL_3:
+		    {
+		    	TimCh[Pin].Htim->Instance->CCR3 = Value;
+		    }
+		    break;
+		    case TIM_CHANNEL_4:
+		    {
+		    	TimCh[Pin].Htim->Instance->CCR4 = Value;
+		    }
+		    break;
+		  }
 			TimCh[Pin].Cfg.Pulse = Value;
 			setPinMode(Pin, PwmMode);
 		}
@@ -134,11 +157,10 @@ void analogWrite(uint8_t Pin, uint16_t Value)
 
 void setPwmMode(uint8_t Pin)
 {
-	HAL_TIM_PWM_ConfigChannel(TimCh[Pin].Htim
-                          , &TimCh[Pin].Cfg
-                          , TimCh[Pin].Channel);
 	if (TimCh[Pin].IsHwPwm)
 	{
+		HAL_TIM_PWM_Start(TimCh[Pin].Htim
+			                 , TimCh[Pin].Channel);
     GPIO[Pin].Cfg.Mode = GPIO_MODE_AF_PP;
 	}
 	else
