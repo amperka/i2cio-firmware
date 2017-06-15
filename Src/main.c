@@ -106,6 +106,7 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   SystemClock_Config();
 
   /* Initialize all configured peripherals */
+  
   MX_GPIO_Init();
   MX_I2C1_Init();
 
@@ -119,6 +120,7 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE BEGIN 2 */
   set_I2C_addr(addr=getI2CAddress());
   HAL_I2C_EnableListen_IT(&hi2c1);
+  HAL_ADC_Start_IT(&hadc);
 
   /* USER CODE END 2 */
 

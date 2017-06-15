@@ -1,5 +1,38 @@
 #include "interrupts.h"
 
+uint8_t adcToPin[] = 
+{
+    4
+  , 5
+  , 6
+  , 8
+  , 7
+  , 3
+  , 2
+  , 1
+  , 0
+  , 9
+  , 10
+};
+
+uint8_t adcIndex=0;
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  if (__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOC))
+    {
+      adcValues[adcToPin[adcIndex]] = HAL_ADC_GetValue(hadc);
+//    adcValues[adcToPin[adcIndex]] += HAL_ADC_GetValue(hadc);
+//    adcValues[adcToPin[adcIndex]] >>= 1;
+    adcIndex++;
+    }
+ 
+  if (__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOS))
+    {
+    adcIndex=0;
+    }
+}
+
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM3)

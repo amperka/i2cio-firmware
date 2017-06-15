@@ -6,6 +6,16 @@
 **/
 
 #include "pin.h"
+
+
+//#define VREFINT_CAL_ADDR                   ((uint16_t*) ((uint32_t)0x1FFFF7BAU)) /* Internal voltage reference, address of parameter VREFINT_CAL: VrefInt ADC raw data acquired at temperature 30 DegC (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
+//#define VREFINT_CAL_VREF                   ((uint32_t) 3300U)                    /* Analog voltage reference (Vref+) value with which temperature sensor has been calibrated in production (tolerance: +-10 mV) (unit: mV). */
+/* Temperature sensor */
+//#define TEMPSENSOR_CAL1_ADDR               ((uint16_t*) ((uint32_t)0x1FFFF7B8U)) /* Internal temperature sensor, address of parameter TS_CAL1: On STM32F0, temperature sensor ADC raw data acquired at temperature  30 DegC (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
+//#define TEMPSENSOR_CAL1_TEMP               (( int32_t)   30)                     /* Internal temperature sensor, temperature at which temperature sensor has been calibrated in production for data into TEMPSENSOR_CAL1_ADDR (tolerance: +-5 DegC) (unit: DegC). */
+//#define TEMPSENSOR_CAL_VREFANALOG          ((uint32_t) 3300U)                    /* Analog voltage reference (Vref+) voltage with which temperature sensor has been calibrated in production (+-10 mV) (unit: mV). */
+
+
 /**
 Start of predeclaration
 **/
@@ -36,16 +46,35 @@ void setPwmFreq(uint16_t freq)
 
 uint16_t analogRead(uint8_t adcChNum)
 {
-	//TODO!!! need to remap adc channel
 	uint16_t result = 0;
-	if (adcChNum < GPIO_COUNT)
-	{
-	  setPinMode(adcChNum, AnalogMode);
-	}
-	if (adcChNum < ADC_COUNT)
-	{
-		result = adcValues[adcChNum];
-	}
+
+		if (adcChNum < GPIO_COUNT-1) // Led not used as input!
+		{
+		  setPinMode(adcChNum, AnalogMode);
+			result = adcValues[adcChNum];
+
+		} 
+/*
+		else if (adcChNum < ADC_COUNT)
+		{
+/*
+			//TODO!!! need to calc perfect:)
+
+    uint32_t Vdd = 3300 * (*VREFINT_CAL_ADDR) / adcValues[10];
+ 
+    uint32_t temperature = (((int32_t)adcValues[9] * Vdd/3300) - (int32_t) *TEMPSENSOR_CAL1_ADDR );
+//    temperature = temperature * (int32_t)(110 - 30);
+//    temperature = temperature / (int32_t)(*TEMP110_CAL_ADDR - *TEMP30_CAL_ADDR);
+    temperature = temperature + 30;
+  //  Vin = Vdd*ADC_raw[0]/4095;
+
+    if (adcChNum == 9)
+    	result = (uint16_t)temperature;
+    else
+    
+    	result = adcValues[adcChNum];
+		}
+		*/
 	return result;
 }
 
