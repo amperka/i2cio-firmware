@@ -120,7 +120,10 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE BEGIN 2 */
   set_I2C_addr(addr=getI2CAddress());
   HAL_I2C_EnableListen_IT(&hi2c1);
-  HAL_ADC_Start_IT(&hadc);
+
+//  HAL_ADCEx_Calibration_Start(&hadc);
+
+  HAL_ADC_Start(&hadc);
 
   /* USER CODE END 2 */
 
@@ -128,19 +131,13 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-/*    for (uint16_t i=0; i<=5;++i)
+    if (recieveMessageFlag)
     {
-      for (int y = 0; y < GPIO_COUNT; ++y)
-      {
-        analogWrite(y, i);
-      }
-     HAL_Delay(1000);
-    }
-    */
-    if (recieveMessageFlag) {
       prepareAnswer(aRxBuffer, aTxBuffer);
       recieveMessageFlag = 0;
     }
+
+    HAL_ADC_ConvCheck(&hadc);
   
 
   /* USER CODE END WHILE */

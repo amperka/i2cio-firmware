@@ -48,16 +48,19 @@ uint16_t analogRead(uint8_t adcChNum)
 {
 	uint16_t result = 0;
 
-		if (adcChNum < GPIO_COUNT-1) // Led not used as input!
+		if (adcChNum < ADC_COUNT) // Led not used as input!
 		{
 		  setPinMode(adcChNum, AnalogMode);
 			result = adcValues[adcChNum];
 
 		} 
+	return result;
+}
+
 /*
 		else if (adcChNum < ADC_COUNT)
 		{
-/*
+
 			//TODO!!! need to calc perfect:)
 
     uint32_t Vdd = 3300 * (*VREFINT_CAL_ADDR) / adcValues[10];
@@ -75,8 +78,6 @@ uint16_t analogRead(uint8_t adcChNum)
     	result = adcValues[adcChNum];
 		}
 		*/
-	return result;
-}
 
 void portMode(uint16_t Port, PinMode Mode)
 {
