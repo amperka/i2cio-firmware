@@ -57,28 +57,6 @@ uint16_t analogRead(uint8_t adcChNum)
 	return result;
 }
 
-/*
-		else if (adcChNum < ADC_COUNT)
-		{
-
-			//TODO!!! need to calc perfect:)
-
-    uint32_t Vdd = 3300 * (*VREFINT_CAL_ADDR) / adcValues[10];
- 
-    uint32_t temperature = (((int32_t)adcValues[9] * Vdd/3300) - (int32_t) *TEMPSENSOR_CAL1_ADDR );
-//    temperature = temperature * (int32_t)(110 - 30);
-//    temperature = temperature / (int32_t)(*TEMP110_CAL_ADDR - *TEMP30_CAL_ADDR);
-    temperature = temperature + 30;
-  //  Vin = Vdd*ADC_raw[0]/4095;
-
-    if (adcChNum == 9)
-    	result = (uint16_t)temperature;
-    else
-    
-    	result = adcValues[adcChNum];
-		}
-		*/
-
 void portMode(uint16_t Port, PinMode Mode)
 {
 	for (uint8_t i = 0; i < GPIO_COUNT; ++i)
