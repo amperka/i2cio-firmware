@@ -42,53 +42,47 @@ uint16_t accum=0;
 // try without interrupts. Regular check
 void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 {
-  if (HAL_IS_BIT_SET(hadc->Instance->ISR, (ADC_FLAG_EOC | ADC_FLAG_EOS)))//__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOC))
+  if (HAL_IS_BIT_SET(hadc->Instance->ISR, ADC_FLAG_EOC))//__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOC))
+  {
+//      __HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
+
+    uint8_t nextChannelEn = 0;
+
+    if (adcConversionCount < 3)
     {
-      __HAL_ADC_CLEAR_FLAG(hadc, (ADC_FLAG_EOC | ADC_FLAG_EOS));
-
-      uint8_t nextChennelEn = 0;
-
-      if (adcConversionCount < 3)
-      {
-        accum = HAL_ADC_GetValue(hadc);
-      }
-      else if (adcConversionCount < 9)
-      {
-        accum += HAL_ADC_GetValue(hadc);
-      } else 
-      {
-        accum += HAL_ADC_GetValue(hadc);
-        nextChennelEn = 1;
-      }
-
-      ++adcConversionCount;
-
-      if (nextChennelEn)
-      {
-        adcValues[adcIndex] = accum>>3;
-        accum = 0;
-
-        adcConversionCount = 0;
-
-        ++adcIndex;
-        if (adcIndex >= ADC_COUNT)
-        {
-          adcIndex = 0;
-        }
-
-        HAL_ADC_Stop(hadc);
-        HAL_ADCEx_Calibration_Start(hadc);
-        hadc->Instance->CHSELR = adcChannel[adcIndex];
-        HAL_ADC_Start(hadc);
-      }
-      
+      accum = HAL_ADC_GetValue(hadc);
     }
- /*
-  if (__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOS))
+    else if (adcConversionCount < 9)
     {
-    adcIndex=0;
+      accum += HAL_ADC_GetValue(hadc);
+    } else 
+    {
+      accum += HAL_ADC_GetValue(hadc);
+      nextChannelEn = 1;
     }
-    */
+
+    ++adcConversionCount;
+
+    if (nextChannelEn)
+    {
+      adcValues[adcIndex] = accum>>3;
+      accum = 0;
+
+      adcConversionCount = 0;
+
+      ++adcIndex;
+      if (adcIndex >= ADC_COUNT)
+      {
+        adcIndex = 0;
+      }
+
+      HAL_ADC_Stop(hadc);
+      HAL_ADCEx_Calibration_Start(hadc);
+      hadc->Instance->CHSELR = adcChannel[adcIndex];
+      HAL_ADC_Start(hadc);
+    }
+    
+  }
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
