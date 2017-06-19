@@ -94,7 +94,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-HAL_I2C_DisableListen_IT(&hi2c1);
+  HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -120,8 +120,6 @@ HAL_I2C_DisableListen_IT(&hi2c1);
   /* USER CODE BEGIN 2 */
   set_I2C_addr(addr=getI2CAddress());
   HAL_I2C_EnableListen_IT(&hi2c1);
-
-//  HAL_ADCEx_Calibration_Start(&hadc);
 
   HAL_ADC_Start(&hadc);
 

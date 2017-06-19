@@ -50,7 +50,6 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 
       if (adcConversionCount < 3)
       {
-//        static uint16_t val;
         accum = HAL_ADC_GetValue(hadc);
       }
       else if (adcConversionCount < 9)
