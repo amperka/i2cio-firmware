@@ -57,7 +57,7 @@ extern TIM_HandleTypeDef htim17;
 typedef struct
 {
   TIM_HandleTypeDef *Htim;
-  TIM_OC_InitTypeDef Cfg;
+//  TIM_OC_InitTypeDef Cfg;
   uint32_t Channel;
   bool IsHwPwm;
   uint32_t SwPwmPinMask;

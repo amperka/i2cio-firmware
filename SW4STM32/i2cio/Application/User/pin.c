@@ -46,7 +46,7 @@ void setPwmFreq(uint16_t freq)
 
 uint16_t analogRead(uint8_t adcChNum)
 {
-	uint16_t result = 0;
+	uint16_t result = 0xffff;
 
 		if (adcChNum < ADC_COUNT) // Led not used as input!
 		{
@@ -157,7 +157,6 @@ void analogWrite(uint8_t Pin, uint16_t Value)
 		    }
 		    break;
 		  }
-			TimCh[Pin].Cfg.Pulse = Value;
 			setPinMode(Pin, PwmMode);
 		}
 	}
