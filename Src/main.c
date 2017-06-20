@@ -75,7 +75,7 @@ uint8_t recieveMessageFlag = 0;
 void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c) {
    GPIOF->BRR |= GPIO_PIN_1;
    recieveMessageFlag = 1;
-   HAL_I2C_EnableListen_IT(hi2c);
+//   HAL_I2C_EnableListen_IT(hi2c);
 }
 
 void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
@@ -108,6 +108,8 @@ int main(void)
   /* Initialize all configured peripherals */
   
   MX_GPIO_Init();
+  GPIOF->BSRR |= GPIO_PIN_1;
+
   MX_I2C1_Init();
 
   InitTimers();
@@ -122,6 +124,7 @@ int main(void)
   HAL_I2C_EnableListen_IT(&hi2c1);
 
   HAL_ADC_Start(&hadc);
+  GPIOF->BRR |= GPIO_PIN_1;
 
   /* USER CODE END 2 */
 
@@ -133,6 +136,8 @@ int main(void)
     {
       prepareAnswer(aRxBuffer, aTxBuffer);
       recieveMessageFlag = 0;
+      HAL_I2C_EnableListen_IT(&hi2c1);
+
     }
 
     HAL_ADC_ConvCheck(&hadc);
@@ -218,7 +223,7 @@ static void MX_NVIC_Init(void)
   HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM3_IRQn);
   /* I2C1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(I2C1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(I2C1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(I2C1_IRQn);
   /* ADC1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0);

@@ -87,6 +87,7 @@ void MX_TIM1_Init(void)
 
   for (uint8_t i = 3; i <= 5; ++i){
     TimCh[i].Htim = &htim1;
+  }
     Cfg.OCMode = TIM_OCMODE_PWM1;
     Cfg.Pulse = 0;
     Cfg.OCPolarity = TIM_OCPOLARITY_HIGH;
@@ -94,7 +95,6 @@ void MX_TIM1_Init(void)
     Cfg.OCFastMode = TIM_OCFAST_DISABLE;
     Cfg.OCIdleState = TIM_OCIDLESTATE_RESET;
     Cfg.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  }
 
   TimCh[3].Channel = TIM_CHANNEL_1;
   TimCh[4].Channel = TIM_CHANNEL_2;
