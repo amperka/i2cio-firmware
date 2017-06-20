@@ -61,7 +61,7 @@ void MX_GPIO_Init(void)
   {
     GPIO[i].Cfg.Mode = GPIO_MODE_INPUT;
     GPIO[i].Cfg.Pull = GPIO_NOPULL;
-    GPIO[i].Cfg.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO[i].Cfg.Speed = GPIO_SPEED_FREQ_HIGH;
   }
 
   GPIO[0].Cfg.Alternate = GPIO_AF1_TIM3;
