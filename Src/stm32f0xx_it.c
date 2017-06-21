@@ -119,16 +119,17 @@ void ADC1_IRQHandler(void)
 */
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 0 */
-  GPIO[3].Port->BSRR = TimCh[5].SwPwmPinMask
-                     | TimCh[4].SwPwmPinMask
-                     | TimCh[3].SwPwmPinMask;
+  uint32_t statusReg = htim1.Instance->SR;
+  uint32_t interruptEnableReg = htim1.Instance->DIER;
 
-  /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 0 */
-//  HAL_TIM_IRQHandler(&htim1);
-  /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 1 */
+  if ((interruptEnableReg & TIM_IT_UPDATE) && (statusReg & TIM_FLAG_UPDATE))
+  {
 
-  /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 1 */
+    __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+    GPIO[3].Port->BSRR = TimCh[5].SwPwmPinMask
+                       | TimCh[4].SwPwmPinMask
+                       | TimCh[3].SwPwmPinMask;
+  }
 }
 
 /**
@@ -136,33 +137,40 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 */
 void TIM1_CC_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM1_CC_IRQn 0 */
-  if(__HAL_TIM_GET_IT_SOURCE(&htim1, TIM_IT_CC4) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC4);  
-    //P5_T1C4_Pin
-    GPIO[5].Port->BRR = TimCh[5].SwPwmPinMask;
-    htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if(__HAL_TIM_GET_IT_SOURCE(&htim1, TIM_IT_CC2) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC2);  
-    //P4_T1C2_Pin
-    GPIO[4].Port->BRR = TimCh[4].SwPwmPinMask;
-    htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if(__HAL_TIM_GET_IT_SOURCE(&htim1, TIM_IT_CC1) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC1);  
-    //P3_T1C1_Pin
-    GPIO[3].Port->BRR = TimCh[3].SwPwmPinMask;
-    htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  /* USER CODE END TIM1_CC_IRQn 0 */
-//  HAL_TIM_IRQHandler(&htim1);
-  /* USER CODE BEGIN TIM1_CC_IRQn 1 */
+  uint32_t interruptEnableReg = htim1.Instance->DIER;
 
-  /* USER CODE END TIM1_CC_IRQn 1 */
+  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC4) != RESET)
+  {
+    if (interruptEnableReg & TIM_IT_CC4)
+    {
+      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC4);  
+      //P5_T1C4_Pin
+      GPIO[5].Port->BRR = TimCh[5].SwPwmPinMask;
+      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+    }
+  }
+
+  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC2) != RESET)
+  {
+    if (interruptEnableReg & TIM_IT_CC2)
+    {
+      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC2);  
+      //P4_T1C2_Pin
+      GPIO[4].Port->BRR = TimCh[4].SwPwmPinMask;
+      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+    }
+  }
+
+  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC1) != RESET)
+  {
+    if (interruptEnableReg & TIM_IT_CC1)
+    {
+      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC1);  
+      //P3_T1C1_Pin
+      GPIO[3].Port->BRR = TimCh[3].SwPwmPinMask;
+      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+    }
+  }
 }
 
 /**
@@ -170,46 +178,39 @@ void TIM1_CC_IRQHandler(void)
 */
 void TIM3_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM3_IRQn 0 */
-  if(__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC3) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC3);  
-    //P9_T3C3_Pin
-    GPIO[9].Port->BRR = TimCh[9].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if(__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC2) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC2);  
-    //P8_T3C2_Pin
-    GPIO[8].Port->BRR = TimCh[8].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if(__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC1) !=RESET)
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC1);  
-    //P6_T3C1_Pin
-    GPIO[6].Port->BRR = TimCh[6].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
 
-    if(__HAL_TIM_GET_FLAG(&htim3, TIM_FLAG_UPDATE) != RESET)
-  {
+  uint32_t statusReg = htim3.Instance->SR;
+  uint32_t interruptEnableReg = htim3.Instance->DIER;
 
-
-  if(__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_UPDATE) !=RESET)
+  if ((interruptEnableReg & TIM_IT_UPDATE) && (statusReg & TIM_FLAG_UPDATE))
   {
     __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE);
     GPIO[9].Port->BSRR = TimCh[9].SwPwmPinMask;
     GPIO[6].Port->BSRR = TimCh[8].SwPwmPinMask
                        | TimCh[6].SwPwmPinMask;
   }
-}
-  /* USER CODE END TIM3_IRQn 0 */
-//  HAL_TIM_IRQHandler(&htim3);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
 
-  /* USER CODE END TIM3_IRQn 1 */
+  if ((interruptEnableReg & TIM_IT_CC3) && (statusReg & TIM_FLAG_CC3))
+  {
+    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC3);  
+    //P9_T3C3_Pin
+    GPIO[9].Port->BRR = TimCh[9].SwPwmPinMask;
+    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+  }
+  if ((interruptEnableReg & TIM_IT_CC2) && (statusReg & TIM_FLAG_CC2))
+  {
+    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC2);  
+    //P8_T3C2_Pin
+    GPIO[8].Port->BRR = TimCh[8].SwPwmPinMask;
+    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+  }
+  if ((interruptEnableReg & TIM_IT_CC1) && (statusReg & TIM_FLAG_CC1))
+  {
+    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC1);  
+    //P6_T3C1_Pin
+    GPIO[6].Port->BRR = TimCh[6].SwPwmPinMask;
+    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+  }
 }
 
 /**
