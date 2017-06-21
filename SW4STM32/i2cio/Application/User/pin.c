@@ -41,7 +41,40 @@ End of predeclaration
 
 void setPwmFreq(uint16_t freq)
 {
-	//TODO
+	uint32_t newCounter = TIM_TICK_FREQ/freq;
+	uint32_t pulseProportion = newCounter * TimCh[0].Htim->Init.Period;
+	for (uint8_t Pin = 0; Pin < GPIO_COUNT; ++Pin)
+	{
+	  switch (TimCh[Pin].Channel)
+	  {
+	    case TIM_CHANNEL_1:
+	    {
+	    	TimCh[Pin].Htim->Instance->CCR1
+	    	= pulseProportion/TimCh[Pin].Htim->Instance->CCR1;
+	    }
+	    break;
+	    case TIM_CHANNEL_2:
+	    {
+	    	TimCh[Pin].Htim->Instance->CCR2
+	    	= pulseProportion/TimCh[Pin].Htim->Instance->CCR2;
+	    }
+	    break;
+	    case TIM_CHANNEL_3:
+	    {
+	    	TimCh[Pin].Htim->Instance->CCR3
+	    	= pulseProportion/TimCh[Pin].Htim->Instance->CCR3;
+	    }
+	    break;
+	    case TIM_CHANNEL_4:
+	    {
+	    	TimCh[Pin].Htim->Instance->CCR4
+	    	= pulseProportion/TimCh[Pin].Htim->Instance->CCR4;
+	    }
+	    break;
+	  }
+	  TimCh[Pin].Htim->Init.Period = (uint16_t)newCounter;
+	  HAL_TIM_PWM_Init(TimCh[Pin].Htim);
+	}
 }
 
 uint16_t analogRead(uint8_t adcChNum)

@@ -42,6 +42,11 @@
 #include "stm32f0xx_hal.h"
 #include "main.h"
 
+#define CORE_CLOCK     48000000U
+#define BASE_PRESCALER 23U //= (48000000/2000000)-1
+#define TIM_TICK_FREQ  CORE_CLOCK/(BASE_PRESCALER + 1)
+#define INIT_PERIOD    2000U // = 1kHz
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */

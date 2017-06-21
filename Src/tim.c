@@ -56,9 +56,9 @@ void MX_TIM1_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 96;
+  htim1.Init.Prescaler = BASE_PRESCALER;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 1000;
+  htim1.Init.Period = INIT_PERIOD;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -147,9 +147,9 @@ void MX_TIM3_Init(void)
 
 
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 96;
+  htim3.Init.Prescaler = BASE_PRESCALER;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 1000;
+  htim3.Init.Period = INIT_PERIOD;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -232,9 +232,9 @@ void MX_TIM14_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim14.Instance = TIM14;
-  htim14.Init.Prescaler = 96;
+  htim14.Init.Prescaler = BASE_PRESCALER;
   htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim14.Init.Period = 1000;
+  htim14.Init.Period = INIT_PERIOD;
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
@@ -273,9 +273,9 @@ void MX_TIM16_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim16.Instance = TIM16;
-  htim16.Init.Prescaler = 96;
+  htim16.Init.Prescaler = BASE_PRESCALER;
   htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim16.Init.Period = 1000;
+  htim16.Init.Period = INIT_PERIOD;
   htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim16.Init.RepetitionCounter = 0;
   htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -330,9 +330,9 @@ void MX_TIM17_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 96;
+  htim17.Init.Prescaler = BASE_PRESCALER;
   htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim17.Init.Period = 1000;
+  htim17.Init.Period = INIT_PERIOD;
   htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim17.Init.RepetitionCounter = 0;
   htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -557,7 +557,6 @@ void InitTimers()
   MX_TIM16_Init();
   MX_TIM17_Init();
 }
-
 
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 {
