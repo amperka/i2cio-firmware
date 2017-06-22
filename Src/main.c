@@ -38,7 +38,7 @@
 #include "tim.h"
 #include "gpio.h"
 #include "pin.h"
-#include "interrupts.h"
+#include "adcLoop.h"
 
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"

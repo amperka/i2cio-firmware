@@ -1,4 +1,4 @@
-#include "interrupts.h"
+#include "adcLoop.h"
 /*
 #define P0_T3C4_H_Pin GPIO_PIN_1
 #define P1_T17C1_H_Pin GPIO_PIN_7
