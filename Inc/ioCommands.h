@@ -18,6 +18,7 @@ enum IOcommand {
     , ANALOG_WRITE // Запустить ШИМ
     , ANALOG_READ // Считать значениие с АЦП
     , PWM_FREQ // установка частоты ШИМ (общая для всех PWM-пинов)
+    , ADC_SPEED
 };
 
 uint16_t concat2U8toU16(uint8_t highVal, uint8_t lowVal){

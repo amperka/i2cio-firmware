@@ -39,6 +39,15 @@ bool isOnlyTimUpdIntEnable(TIM_HandleTypeDef *htim);
 End of predeclaration
 **/
 
+void setAdcSpeed(uint8_t speed)
+{
+	currentAdcSpeed = ADC_SPEED_COUNT-1;
+	if (speed < ADC_SPEED_COUNT)
+	{
+		currentAdcSpeed = speed;
+	}
+}
+
 void setPwmFreq(uint16_t freq)
 {
 	uint32_t newCounter = TIM_TICK_FREQ/freq;
@@ -155,6 +164,9 @@ void digitalWrite(uint8_t Pin, bool Value)
 
 void analogWrite(uint8_t Pin, uint16_t Value)
 {
+	uint32_t Period = (uint32_t)TimCh[Pin].Htim->Init.Period;
+	uint32_t counter = ((uint32_t)Value * Period) / 65535U;
+	Value = (uint16_t)counter;
 	if (Pin < GPIO_COUNT)
 	{
 		if (Value == 0)

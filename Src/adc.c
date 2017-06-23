@@ -44,6 +44,18 @@
 ADC_HandleTypeDef hadc;
 
 uint16_t adcValues[ADC_COUNT];
+uint32_t adcSpeed[] = {
+    ADC_SAMPLETIME_1CYCLE_5       /*!< Sampling time 1.5 ADC clock cycle */
+  , ADC_SAMPLETIME_7CYCLES_5      /*!< Sampling time 7.5 ADC clock cycles */
+  , ADC_SAMPLETIME_13CYCLES_5     /*!< Sampling time 13.5 ADC clock cycles */
+  , ADC_SAMPLETIME_28CYCLES_5     /*!< Sampling time 28.5 ADC clock cycles */
+  , ADC_SAMPLETIME_41CYCLES_5     /*!< Sampling time 41.5 ADC clock cycles */
+  , ADC_SAMPLETIME_55CYCLES_5     /*!< Sampling time 55.5 ADC clock cycles */
+  , ADC_SAMPLETIME_71CYCLES_5     /*!< Sampling time 71.5 ADC clock cycles */
+  , ADC_SAMPLETIME_239CYCLES_5    /*!< Sampling time 239.5 ADC clock cycles */
+};
+
+uint8_t currentAdcSpeed = 6;
 
 /* ADC init function */
 void MX_ADC_Init(void)
@@ -73,7 +85,7 @@ void MX_ADC_Init(void)
 
 // init virtual channel 0
   sConfig.Rank = ADC_RANK_NONE;
-  sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+  sConfig.SamplingTime = adcSpeed[currentAdcSpeed];
   sConfig.Channel = ADC_CHANNEL_9;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
   {

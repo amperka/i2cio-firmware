@@ -137,7 +137,6 @@ int main(void)
       prepareAnswer(aRxBuffer, aTxBuffer);
       recieveMessageFlag = 0;
       HAL_I2C_EnableListen_IT(&hi2c1);
-
     }
 
     HAL_ADC_ConvCheck(&hadc);
@@ -282,7 +281,7 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case CHANGE_I2C_ADDR:
     {
       set_I2C_addr(addr = commandBuf[1]);
-      HAL_I2C_EnableListen_IT(&hi2c1);
+//      HAL_I2C_EnableListen_IT(&hi2c1);
     }
     break;
 
@@ -367,6 +366,12 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case ANALOG_READ:
     {
       setAnswerBuf_16(answerBuf, analogRead(commandBuf[1]));
+    }
+    break;
+
+    case ADC_SPEED:
+    {
+      setAdcSpeed(commandBuf[1]);
     }
     break;
   }

@@ -78,7 +78,13 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 
       HAL_ADC_Stop(hadc);
       HAL_ADCEx_Calibration_Start(hadc);
+      /*select next channel*/
       hadc->Instance->CHSELR = adcChannel[adcIndex];
+      /* Clear the old sample time */
+      hadc->Instance->SMPR &= ~(ADC_SMPR_SMP);
+      /* Set the new sample time */
+      hadc->Instance->SMPR |= ADC_SMPR_SET(adcSpeed[currentAdcSpeed]);
+
       HAL_ADC_Start(hadc);
     }
   }

@@ -36,6 +36,7 @@ bool digitalRead(uint8_t Pin);
 void digitalWrite(uint8_t Pin, bool Value);
 void analogWrite(uint8_t Pin, uint16_t Value);
 void portMode(uint16_t Port, PinMode Mode);
+void setAdcSpeed(uint8_t speed);
 
 /* USER CODE END */
 
