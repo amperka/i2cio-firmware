@@ -71,10 +71,11 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
       uint32_t lpFilteredValue = 0;
 
       // lastVal*3
-      lpFilteredValue = (adcValues[adcIndex] << ADC_FILTER_SH) - adcValues[adcIndex];
+      //lpFilteredValue = (adcValues[adcIndex] << ADC_FILTER_SH) - adcValues[adcIndex];
+      lpFilteredValue = (adcValues[adcIndex] * 3) << 3;
         
       // we accumulate conversions 8 times, so result will be >> 3
-      lpFilteredValue = ((lpFilteredValue << 3) + accum) >> (3 + ADC_FILTER_SH);
+      lpFilteredValue = (lpFilteredValue + accum) >> (3 + ADC_FILTER_SH);
 
       adcValues[adcIndex] = (uint16_t)lpFilteredValue;
 
