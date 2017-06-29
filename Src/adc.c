@@ -37,6 +37,7 @@
 
 #include "gpio.h"
 
+#define DEFAULT_ADC_SPEED 6
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -55,7 +56,7 @@ uint32_t adcSpeed[] = {
   , ADC_SAMPLETIME_239CYCLES_5    /*!< Sampling time 239.5 ADC clock cycles */
 };
 
-uint8_t currentAdcSpeed = 6;
+uint8_t currentAdcSpeed = DEFAULT_ADC_SPEED;
 
 /* ADC init function */
 void MX_ADC_Init(void)
@@ -91,6 +92,12 @@ void MX_ADC_Init(void)
   {
     Error_Handler();
   }
+
+  for (int i = 0; i < ADC_COUNT; ++i)
+  {
+    adcValues[i] = 0;
+  }
+
 
     /**Configure for the selected ADC regular channel to be converted. 
     */

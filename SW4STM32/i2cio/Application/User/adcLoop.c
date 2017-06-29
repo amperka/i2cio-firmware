@@ -20,7 +20,9 @@
 #define ADCh7 ADC_CHSELR_CHANNEL(ADC_CHANNEL_4)
 #define ADCh8 ADC_CHSELR_CHANNEL(ADC_CHANNEL_3)
 
+#define ADC_FILTER_SH 2
 
+uint8_t speed = 0;
 uint32_t adcChannel[] = 
 {
     ADCh0
@@ -65,7 +67,17 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 
     if (nextChannelEn)
     {
-      adcValues[adcIndex] = accum>>3;
+      // in last 3 bit is adc speed, then - low pass filter K. i can't use a float, due flash size
+      uint32_t lpFilteredValue = 0;
+
+      // lastVal*3
+      lpFilteredValue = (adcValues[adcIndex] << ADC_FILTER_SH) - adcValues[adcIndex];
+        
+      // we accumulate conversions 8 times, so result will be >> 3
+      lpFilteredValue = ((lpFilteredValue << 3) + accum) >> (3 + ADC_FILTER_SH);
+
+      adcValues[adcIndex] = (uint16_t)lpFilteredValue;
+
       accum = 0;
 
       adcConversionCount = 0;
@@ -83,8 +95,11 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
       /* Clear the old sample time */
       hadc->Instance->SMPR &= ~(ADC_SMPR_SMP);
       /* Set the new sample time */
-      hadc->Instance->SMPR |= ADC_SMPR_SET(adcSpeed[currentAdcSpeed]);
-
+      if (currentAdcSpeed != speed)
+      {
+        speed = currentAdcSpeed;
+        hadc->Instance->SMPR |= ADC_SMPR_SET(adcSpeed[(speed)]);
+      }
       HAL_ADC_Start(hadc);
     }
   }

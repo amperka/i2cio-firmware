@@ -44,7 +44,7 @@ void setAdcSpeed(uint8_t speed)
 	currentAdcSpeed = ADC_SPEED_COUNT-1;
 	if (speed < ADC_SPEED_COUNT)
 	{
-		currentAdcSpeed = speed;
+  	currentAdcSpeed = speed;
 	}
 }
 
@@ -54,6 +54,11 @@ void setPwmFreq(uint16_t freq)
 	uint32_t pulseProportion = newCounter * TimCh[0].Htim->Init.Period;
 	for (uint8_t Pin = 0; Pin < GPIO_COUNT; ++Pin)
 	{
+		if (TimCh[Pin].Htim->Init.Period != (uint16_t)newCounter)
+		{
+    TimCh[Pin].Htim->Init.Period = (uint16_t)newCounter;
+    TimCh[Pin].Htim->Instance->ARR = (uint32_t)TimCh[Pin].Htim->Init.Period;
+		}
 	  switch (TimCh[Pin].Channel)
 	  {
 	    case TIM_CHANNEL_1:
@@ -81,8 +86,6 @@ void setPwmFreq(uint16_t freq)
 	    }
 	    break;
 	  }
-	  TimCh[Pin].Htim->Init.Period = (uint16_t)newCounter;
-	  HAL_TIM_PWM_Init(TimCh[Pin].Htim);
 	}
 }
 
