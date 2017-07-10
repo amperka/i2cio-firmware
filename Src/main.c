@@ -43,6 +43,7 @@
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"
 #define DEFAULT_I2C_ADDR 42
+#define LED_MASK (1U<<9)
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -108,7 +109,7 @@ int main(void)
   /* Initialize all configured peripherals */
   
   MX_GPIO_Init();
-  GPIOF->BSRR |= GPIO_PIN_1;
+//  GPIOF->BSRR |= GPIO_PIN_1;
 
   MX_I2C1_Init();
 
@@ -124,7 +125,17 @@ int main(void)
   HAL_I2C_EnableListen_IT(&hi2c1);
 
   HAL_ADC_Start(&hadc);
-  GPIOF->BRR |= GPIO_PIN_1;
+  
+  uint8_t bootPwmCounter = 0;
+  while (!recieveMessageFlag)
+  {
+    analogWrite(9, bootPwmCounter);
+    HAL_Delay(5);
+    ++bootPwmCounter;
+  }
+  digitalWritePort(LED_MASK, false);
+
+//  GPIOF->BRR |= GPIO_PIN_1;
 
   /* USER CODE END 2 */
 
