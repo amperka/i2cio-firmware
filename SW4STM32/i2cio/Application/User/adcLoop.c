@@ -67,11 +67,11 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 
     if (nextChannelEn)
     {
-      // in last 3 bit is adc speed, then - low pass filter K. i can't use a float, due flash size
+      // i can't use a float, due flash size
       uint32_t lpFilteredValue = 0;
 
       // lastVal*3
-      //lpFilteredValue = (adcValues[adcIndex] << ADC_FILTER_SH) - adcValues[adcIndex];
+      // low pass filter - use 3 last values and one new. LSH as average of previous summ of conversions
       lpFilteredValue = (adcValues[adcIndex] * 3) << 3;
         
       // we accumulate conversions 8 times, so result will be >> 3
