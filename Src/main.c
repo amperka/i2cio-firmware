@@ -126,10 +126,14 @@ int main(void)
 
   HAL_ADC_Start(&hadc);
 
+  // boot indication^
   uint16_t bootPwmCounter = 50;
   bool incr = true;
   while (!recieveMessageFlag)
   {
+    // we need prepare ADC before extern microcontroller
+    HAL_ADC_ConvCheck(&hadc);
+
     analogWrite(9, bootPwmCounter);
     HAL_Delay(1);
     incr? (bootPwmCounter += 10) : (bootPwmCounter -= 10);
