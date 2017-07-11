@@ -125,13 +125,22 @@ int main(void)
   HAL_I2C_EnableListen_IT(&hi2c1);
 
   HAL_ADC_Start(&hadc);
-  
-  uint8_t bootPwmCounter = 0;
+
+  uint16_t bootPwmCounter = 50;
+  bool incr = true;
   while (!recieveMessageFlag)
   {
     analogWrite(9, bootPwmCounter);
-    HAL_Delay(5);
-    ++bootPwmCounter;
+    HAL_Delay(1);
+    incr? (bootPwmCounter += 10) : (bootPwmCounter -= 10);
+
+    if (bootPwmCounter > INIT_PERIOD)
+    {
+      incr = false;
+    } else if (bootPwmCounter < 50)
+    {
+      incr = true;
+    }
   }
   digitalWritePort(LED_MASK, false);
 
