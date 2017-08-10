@@ -117,8 +117,10 @@ void portMode(uint16_t Port, PinMode Mode)
 uint16_t digitalReadPort()
 {
 	uint16_t result = 0;
-	for (uint8_t i = 0; i < GPIO_COUNT; ++i)
+	uint8_t i = GPIO_COUNT;
+	while (i)
 	{
+		--i;
 		result <<= 1;
 		if (digitalRead(i))
 		{
