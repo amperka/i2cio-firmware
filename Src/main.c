@@ -129,14 +129,19 @@ int main(void)
   // boot indication^
   uint16_t bootPwmCounter = 50;
   bool incr = true;
+  uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
     // we need prepare ADC before extern microcontroller
     HAL_ADC_ConvCheck(&hadc);
 
     analogWrite(9, bootPwmCounter);
-    HAL_Delay(1);
-    incr? (bootPwmCounter += 10) : (bootPwmCounter -= 10);
+
+//    HAL_Delay(1);
+    if (lastTick != HAL_GetTick()) {
+      incr? (bootPwmCounter += 10) : (bootPwmCounter -= 10);
+      lastTick = HAL_GetTick();
+    }
 
     if (bootPwmCounter > INIT_PERIOD)
     {
