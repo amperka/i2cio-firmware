@@ -85,7 +85,7 @@ void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, ui
   if (TransferDirection) {
     HAL_I2C_Slave_Sequential_Transmit_IT(hi2c, aTxBuffer, 4, I2C_FIRST_AND_LAST_FRAME);
   } else {
-    HAL_I2C_Slave_Sequential_Receive_IT(hi2c, aRxBuffer, 4, I2C_FIRST_AND_LAST_FRAME);
+    HAL_I2C_Slave_Sequential_Receive_IT(hi2c, aRxBuffer, 5, I2C_FIRST_AND_LAST_FRAME);
   }
 }
 

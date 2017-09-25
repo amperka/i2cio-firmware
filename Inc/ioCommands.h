@@ -49,7 +49,7 @@ void setAnswerBuf_32(uint8_t *answerBuf, uint32_t val){
 }
 
 uint32_t getBufData_32(uint8_t *dataBuf){
-  uint32_t result = dataBuf[3] | (dataBuf[2]<<8) | (dataBuf[1]<<16) | (dataBuf[0]<<24);
+  uint32_t result = dataBuf[4] | (dataBuf[3]<<8) | (dataBuf[2]<<16) | (dataBuf[1]<<24);
   return result;
 }
 
