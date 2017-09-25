@@ -51,7 +51,7 @@
 /* USER CODE BEGIN PV */
 uint8_t aRxBuffer[10];
 uint8_t aTxBuffer[10];
-
+uint32_t masterReadedUid= 0xffffffff;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
@@ -396,6 +396,20 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case ADC_SPEED:
     {
       setAdcSpeed(commandBuf[1]);
+    }
+    break;
+
+    case GET_MASTER_READED_UID:
+    {
+      masterReadedUid = getBufData_32(commandBuf);
+    }
+    break;
+    case CHANGE_I2C_ADDR_IF_UID_OK:
+    {
+      if (masterReadedUid == getUID()){
+        set_I2C_addr(addr = commandBuf[1]);
+      }
+      masterReadedUid = 0xffffffff;
     }
     break;
   }
