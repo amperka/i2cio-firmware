@@ -49,38 +49,38 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t aRxBuffer[10];
-uint8_t aTxBuffer[10];
-uint32_t masterReadedUid= 0xffffffff;
+  uint8_t aRxBuffer[10];
+  uint8_t aTxBuffer[10];
+  uint32_t masterReadedUid= 0xffffffff;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-void Error_Handler(void);
-static void MX_NVIC_Init(void);
+  void SystemClock_Config(void);
+  void Error_Handler(void);
+  static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-uint8_t getI2CAddress(void);
-void saveI2CAddress(uint8_t address);
-void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf);
+  uint8_t getI2CAddress(void);
+  void saveI2CAddress(uint8_t address);
+  void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf);
 
-uint8_t addr;
-uint8_t recieveMessageFlag = 0;
+  uint8_t addr;
+  uint8_t recieveMessageFlag = 0;
 
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c) {
+  void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c) {
    GPIOF->BRR |= GPIO_PIN_1;
    recieveMessageFlag = 1;
 //   HAL_I2C_EnableListen_IT(hi2c);
-}
+ }
 
-void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
-{
+ void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
+ {
   GPIOF->BSRR |= GPIO_PIN_1;
   if (TransferDirection) {
     HAL_I2C_Slave_Sequential_Transmit_IT(hi2c, aTxBuffer, 4, I2C_FIRST_AND_LAST_FRAME);
@@ -169,7 +169,7 @@ int main(void)
     }
 
     HAL_ADC_ConvCheck(&hadc);
-  
+
 
   /* USER CODE END WHILE */
 
@@ -208,7 +208,7 @@ void SystemClock_Config(void)
     /**Initializes the CPU, AHB and APB busses clocks 
     */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1;
+  |RCC_CLOCKTYPE_PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -325,31 +325,31 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case PORT_MODE_INPUT:
     {
       portMode(concat2U8toU16(commandBuf[1]
-                            , commandBuf[2])
-                            , InputMode);
+        , commandBuf[2])
+      , InputMode);
     }
     break;
 
     case PORT_MODE_PULLUP:
     {
       portMode(concat2U8toU16(commandBuf[1]
-                            , commandBuf[2])
-                            , PullUpMode);
+        , commandBuf[2])
+      , PullUpMode);
     }
     break;
 
     case PORT_MODE_PULLDOWN: //TODO : add it to ioCommands
     {
       portMode(concat2U8toU16(commandBuf[1]
-                            , commandBuf[2])
-                            , PullDownMode);
+        , commandBuf[2])
+      , PullDownMode);
     }
 
     case PORT_MODE_OUTPUT:
     {
       portMode(concat2U8toU16(commandBuf[1]
-                            , commandBuf[2])
-                            , OutputMode);
+        , commandBuf[2])
+      , OutputMode);
     }
     break;
 
@@ -362,33 +362,33 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case DIGITAL_WRITE_HIGH:
     {
       digitalWritePort(concat2U8toU16(
-                                commandBuf[1]
-                              , commandBuf[2])
-                              , true);
+        commandBuf[1]
+        , commandBuf[2])
+      , true);
     }
     break;
 
     case DIGITAL_WRITE_LOW:
     {
       digitalWritePort(concat2U8toU16(
-                                commandBuf[1]
-                              , commandBuf[2])
-                              , false);
+        commandBuf[1]
+        , commandBuf[2])
+      , false);
     }
     break;
 
     case PWM_FREQ:
     {
       setPwmFreq(concat2U8toU16(commandBuf[1]
-                              , commandBuf[2]));
+        , commandBuf[2]));
     }
     break;
 
     case ANALOG_WRITE:
     {
       analogWrite(commandBuf[1]
-                , concat2U8toU16(commandBuf[2]
-                               , commandBuf[3]));
+        , concat2U8toU16(commandBuf[2]
+         , commandBuf[3]));
     }
     break;
 
@@ -417,6 +417,12 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
       masterReadedUid = 0xffffffff;
     }
     break;
+    case SAY_SLOT:
+    {
+      uint32_t slot = ((uint8_t)'s'<<24) | (uint8_t)('l'<<16) | (uint8_t)('o'<<8) | (uint8_t)'t'; 
+      setAnswerBuf_32(answerBuf, slot);
+    }
+    break;
   }
 }
 
@@ -427,17 +433,17 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
   * @param  None
   * @retval None
   */
-void Error_Handler(void)
-{
+  void Error_Handler(void)
+  {
   /* USER CODE BEGIN Error_Handler */
   /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
-    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    HAL_Delay(330);
-  }
+    while(1) 
+    {
+      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+      HAL_Delay(330);
+    }
   /* USER CODE END Error_Handler */ 
-}
+  }
 
 #ifdef USE_FULL_ASSERT
 
@@ -448,14 +454,14 @@ void Error_Handler(void)
    * @param line: assert_param error line source number
    * @retval None
    */
-void assert_failed(uint8_t* file, uint32_t line)
-{
+   void assert_failed(uint8_t* file, uint32_t line)
+   {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 
-}
+   }
 
 #endif
 

@@ -21,6 +21,7 @@ enum IOcommand {
     , ADC_SPEED
     , GET_MASTER_READED_UID
     , CHANGE_I2C_ADDR_IF_UID_OK
+    , SAY_SLOT
 };
 
 uint16_t concat2U8toU16(uint8_t highVal, uint8_t lowVal){
