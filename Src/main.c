@@ -44,6 +44,7 @@
 #include "ioCommands.h"
 #define DEFAULT_I2C_ADDR 42
 #define LED_MASK (1U<<9)
+#define SLOT ('s' << 24) | ('l' << 16) | ('o' << 8) | 't'
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -419,7 +420,7 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     break;
     case SAY_SLOT:
     {
-      uint32_t slot = ((uint8_t)'s'<<24) | (uint8_t)('l'<<16) | (uint8_t)('o'<<8) | (uint8_t)'t'; 
+      uint32_t slot = SLOT; 
       setAnswerBuf_32(answerBuf, slot);
     }
     break;
