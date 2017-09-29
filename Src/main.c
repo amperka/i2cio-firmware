@@ -44,7 +44,7 @@
 #include "ioCommands.h"
 #define DEFAULT_I2C_ADDR 42
 #define LED_MASK (1U<<9)
-#define SLOT (uint32_t)(('s' << 24) | ('l' << 16) | ('o' << 8) | ('t' <<0))
+#define SLOT (uint32_t)(((uint32_t)'s' << 24) | ((uint32_t)'l' << 16) | ((uint32_t)'o' << 8) | ((uint32_t)'t'))
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
