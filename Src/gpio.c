@@ -45,6 +45,8 @@
 
 GPIO_Type GPIO[GPIO_COUNT];
 
+GPIO_Type Led1;
+
 /* USER CODE END 1 */
 
 /** Configure pins as 
@@ -91,14 +93,19 @@ void MX_GPIO_Init(void)
   GPIO[8].Port = P8_T3C2_GPIO_Port;
   GPIO[9].Port = P9_T3C3_GPIO_Port;
 
+  Led1.Cfg.Mode = GPIO_MODE_OUTPUT_PP;
+  Led1.Cfg.Pull = GPIO_NOPULL;
+  Led1.Cfg.Speed = GPIO_SPEED_FREQ_HIGH;
+  Led1.Cfg.Pin = LED1_Pin;
+  Led1.Port = LED1_GPIO_Port;
+
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  GPIO[9].Cfg.Mode = GPIO_MODE_OUTPUT_PP;
-  HAL_GPIO_WritePin(GPIO[9].Port, GPIO[9].Cfg.Pin, GPIO_PIN_RESET);
-  HAL_GPIO_Init(GPIO[9].Port, &GPIO[9].Cfg);
+  HAL_GPIO_WritePin(Led1.Port, Led1.Cfg.Pin, GPIO_PIN_RESET);
+  HAL_GPIO_Init(Led1.Port, &Led1.Cfg);
 
 /*
   !!!!!!!!!

@@ -57,9 +57,9 @@
 #define P6_T3C1_Pin GPIO_PIN_2
 #define P7_T14C1_H_Pin GPIO_PIN_4
 #define P8_T3C2_Pin GPIO_PIN_3
-/* LED - P9_T3C3 */
+/* LED & P9_T3C3  - different*/
 #define LED1_Pin GPIO_PIN_1
-#define P9_T3C3_Pin LED1_Pin
+#define P9_T3C3_Pin GPIO_PIN_0
 
 #define P0_T3C4_H_GPIO_Port GPIOB
 #define P1_T17C1_H_GPIO_Port GPIOA
@@ -71,7 +71,7 @@
 #define P7_T14C1_H_GPIO_Port GPIOA
 #define P8_T3C2_GPIO_Port GPIOA
 #define LED1_GPIO_Port GPIOF
-#define P9_T3C3_GPIO_Port LED1_GPIO_Port
+#define P9_T3C3_GPIO_Port GPIOF
 /* USER CODE END Private defines */
 
 /**

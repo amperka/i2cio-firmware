@@ -43,7 +43,6 @@
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"
 #define DEFAULT_I2C_ADDR 42
-#define LED_MASK (1U<<9)
 #define SLOT (uint32_t)(((uint32_t)'s' << 24) | ((uint32_t)'l' << 16) | ((uint32_t)'o' << 8) | ((uint32_t)'t'))
 /* USER CODE END Includes */
 
@@ -75,14 +74,14 @@
 
 /* USER CODE BEGIN 0 */
   void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c) {
-   GPIOF->BRR |= GPIO_PIN_1;
+   LED1_GPIO_Port->BRR |= LED1_Pin;
    recieveMessageFlag = 1;
 //   HAL_I2C_EnableListen_IT(hi2c);
  }
 
  void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
  {
-  GPIOF->BSRR |= GPIO_PIN_1;
+  LED1_GPIO_Port->BSRR |= LED1_Pin;
   if (TransferDirection) {
     HAL_I2C_Slave_Sequential_Transmit_IT(hi2c, aTxBuffer, 4, I2C_FIRST_AND_LAST_FRAME);
   } else {
@@ -128,31 +127,26 @@ int main(void)
   HAL_ADC_Start(&hadc);
 
   // boot indication^
-  uint16_t bootPwmCounter = 50;
-  bool incr = true;
+  uint8_t bootPwmCounter = 0;
+
   uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
     // we need prepare ADC before extern microcontroller
     HAL_ADC_ConvCheck(&hadc);
 
-    analogWrite(9, bootPwmCounter);
-
-//    HAL_Delay(1);
-    if (lastTick != HAL_GetTick()) {
-      incr? (bootPwmCounter += 10) : (bootPwmCounter -= 10);
+    if (HAL_GetTick() - lastTick > bootPwmCounter) {
+      ++bootPwmCounter;
+      if (bootPwmCounter > 50)
+        bootPwmCounter = 0;
+      
+      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
       lastTick = HAL_GetTick();
     }
-
-    if (bootPwmCounter > INIT_PERIOD)
-    {
-      incr = false;
-    } else if (bootPwmCounter < 50)
-    {
-      incr = true;
-    }
   }
-  digitalWritePort(LED_MASK, false);
+
+// reset led on complit callback, so yagni:
+//  digitalWritePort(LED_MASK, false);
 
 //  GPIOF->BRR |= GPIO_PIN_1;
 
