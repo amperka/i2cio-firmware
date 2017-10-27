@@ -127,7 +127,10 @@ int main(void)
   HAL_ADC_Start(&hadc);
 
   // boot indication^
+  bool dig = false;
+  uint8_t bootPwmFreqCounter = 0;
   uint8_t bootPwmCounter = 0;
+  uint8_t timeCounter = 0;
 
   uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
@@ -135,12 +138,31 @@ int main(void)
     // we need prepare ADC before extern microcontroller
     HAL_ADC_ConvCheck(&hadc);
 
-    if (HAL_GetTick() - lastTick > bootPwmCounter) {
-      ++bootPwmCounter;
-      if (bootPwmCounter > 50)
-        bootPwmCounter = 0;
-      
-      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    if (HAL_GetTick() != lastTick) {
+      ++bootPwmFreqCounter;
+      if (bootPwmFreqCounter > 15)
+      {
+        bootPwmFreqCounter = 0;
+        ++ timeCounter;
+        if (timeCounter > 2)
+        {
+          timeCounter = 0;
+          if ((bootPwmCounter > 9) || (bootPwmCounter < 1))
+          {
+            dig = !dig;
+          }
+          if (dig)
+            ++bootPwmCounter;
+          else
+            --bootPwmCounter;
+        }
+      }
+      if (bootPwmFreqCounter > bootPwmCounter)
+        LED1_GPIO_Port->BRR |= LED1_Pin;
+      else
+        LED1_GPIO_Port->BSRR |= LED1_Pin;
+
+      //HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
       lastTick = HAL_GetTick();
     }
   }
