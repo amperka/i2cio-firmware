@@ -50,7 +50,7 @@ extern ADC_HandleTypeDef hadc;
 
 /* USER CODE BEGIN Private defines */
 
-extern uint16_t adcValues[ADC_COUNT];
+extern uint32_t adcValues[ADC_COUNT];
 extern uint32_t adcSpeed[ADC_SPEED_COUNT];
 extern uint8_t currentAdcSpeed;
 

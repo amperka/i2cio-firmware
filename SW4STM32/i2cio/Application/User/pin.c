@@ -96,8 +96,8 @@ uint16_t analogRead(uint8_t adcChNum)
 		if (adcChNum < ADC_COUNT) // Led not used as input!
 		{
 		  setPinMode(adcChNum, AnalogMode);
-			result = adcValues[adcChNum];
-
+	        // we accumulate conversions 8 times, so result will be >> 3
+			result = adcValues[adcChNum] >> 3; // look at adcLoop.c
 		} 
 	return result;
 }

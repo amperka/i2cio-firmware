@@ -38,7 +38,7 @@ uint32_t adcChannel[] =
 
 uint8_t adcConversionCount = 0; // we have wery high resistive load
 uint8_t adcIndex = 0; // as init in adc.c = ADCh0
-uint16_t accum=0;
+volatile uint32_t accum = 0;
 
 
 // try without interrupts. Regular check
@@ -50,11 +50,11 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 
     uint8_t nextChannelEn = 0;
 
-    if (adcConversionCount < 3)
+    if (adcConversionCount < 4)
     {
       accum = HAL_ADC_GetValue(hadc);
     }
-    else if (adcConversionCount < 9)
+    else if (adcConversionCount < 10)
     {
       accum += HAL_ADC_GetValue(hadc);
     } else 
@@ -71,26 +71,27 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
       uint32_t lpFilteredValue = 0;
 
       // lastVal*3
-      // low pass filter - use 3 last values and one new. LSH as average of previous summ of conversions
-      lpFilteredValue = (adcValues[adcIndex] * 3) << 3;
+      // low pass filter - use 3 last values and one new
+      lpFilteredValue = adcValues[adcIndex] * 3;
         
-      // we accumulate conversions 8 times, so result will be >> 3
-      lpFilteredValue = (lpFilteredValue + accum) >> (3 + ADC_FILTER_SH);
+      lpFilteredValue = (lpFilteredValue + accum) >> ADC_FILTER_SH;
 
-      adcValues[adcIndex] = (uint16_t)lpFilteredValue;
+      adcValues[adcIndex] = lpFilteredValue;
 
       accum = 0;
 
       adcConversionCount = 0;
 
       ++adcIndex;
+
+      HAL_ADC_Stop(hadc);
+
       if (adcIndex >= ADC_COUNT)
       {
         adcIndex = 0;
+        HAL_ADCEx_Calibration_Start(hadc);
       }
 
-      HAL_ADC_Stop(hadc);
-      HAL_ADCEx_Calibration_Start(hadc);
       /*select next channel*/
       hadc->Instance->CHSELR = adcChannel[adcIndex];
       /* Clear the old sample time */

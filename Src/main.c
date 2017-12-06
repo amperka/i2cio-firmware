@@ -135,6 +135,7 @@ int main(void)
   uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
+    HAL_ADCEx_Calibration_Start(&hadc);
     // we need prepare ADC before extern microcontroller
     HAL_ADC_ConvCheck(&hadc);
 

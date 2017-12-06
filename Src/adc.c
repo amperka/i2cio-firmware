@@ -44,7 +44,7 @@
 
 ADC_HandleTypeDef hadc;
 
-uint16_t adcValues[ADC_COUNT];
+uint32_t adcValues[ADC_COUNT];
 uint32_t adcSpeed[] = {
     ADC_SAMPLETIME_1CYCLE_5       /*!< Sampling time 1.5 ADC clock cycle */
   , ADC_SAMPLETIME_7CYCLES_5      /*!< Sampling time 7.5 ADC clock cycles */
