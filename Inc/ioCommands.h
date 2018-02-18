@@ -204,10 +204,10 @@ enum IOcommand {
       */
 
 // TODO:
-    // 0x1f - Advanced ADC functions
-    , ADC_LOWPASS_FILTER_ON = 0x1f  // command
+    // 0x20 - Advanced ADC functions
+    , ADC_LOWPASS_FILTER_ON = 0x20  // command
       /*
-      * command     (0x1F)
+      * command     (0x20)
       * arguments   no
       * answer      no
       
@@ -216,7 +216,7 @@ enum IOcommand {
 
     , ADC_LOWPASS_FILTER_OFF        // command
       /*
-      * command     (0x1F)
+      * command     (0x21)
       * arguments   no
       * answer      no
       
@@ -224,14 +224,14 @@ enum IOcommand {
       */
 
 //    , 
-    // 0x2f -Advanced PWM functions
-    , ANALOG_WRITE_U8 = 0x2f        // 1b in
-    // 0x3f -Advanced Digital functions
-    // 0x4f -Software interfaces
+    // 0x40 -Advanced PWM functions
+    , ANALOG_WRITE_U8 = 0x40        // 1b in
+    // 0x60 -Advanced Digital functions
+    // 0x80 -Software interfaces
     // ... 8 groups, 32 commands each
 
-    // etc - start at 0xdf
-    , VERSION = 0xdf                // command, 4b answer
+    // etc - start at 0xE0
+    , VERSION = 0xE0                // command, 4b answer
     , ACT_LED_ENABLE                 // command
     , ACT_LED_DISABLE                // command
     , ACT_LED_BLINK_WITH_COUNTER // 1b in
