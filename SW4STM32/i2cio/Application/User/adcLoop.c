@@ -25,7 +25,7 @@
 uint8_t speed = 0;
 uint32_t adcChannel[] = 
 {
-    ADCh0
+  ADCh0
   , ADCh1
   , ADCh2
   , ADCh3
@@ -46,42 +46,49 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 {
   if (HAL_IS_BIT_SET(hadc->Instance->ISR, ADC_FLAG_EOC))//__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOC))
   {
-//      __HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
+    bool nextChannelEn = false;
 
-    uint8_t nextChannelEn = 0;
+    if (adcLowPassFilterEnable) {
 
-    if (adcConversionCount < 4)
-    {
-      accum = HAL_ADC_GetValue(hadc);
+      if (adcConversionCount < 4)
+      {
+        accum = HAL_ADC_GetValue(hadc);
+      }
+      else if (adcConversionCount < 10)
+      {
+        accum += HAL_ADC_GetValue(hadc);
+      } else 
+      {
+        accum += HAL_ADC_GetValue(hadc);
+        nextChannelEn = true;
+      }
+
+      ++adcConversionCount;
+
+      if (nextChannelEn)
+      {
+            // i can't use a float, due flash size
+        uint32_t lpFilteredValue = 0;
+
+            // lastVal*3
+            // low pass filter - use 3 last values and one new
+        lpFilteredValue = adcValues[adcIndex] * 3;
+
+        lpFilteredValue = (lpFilteredValue + accum) >> ADC_FILTER_SH;
+
+        adcValues[adcIndex] = lpFilteredValue;
+
+        accum = 0;
+
+        adcConversionCount = 0;
+      }
+    } else {
+      adcValues[adcIndex] = HAL_ADC_GetValue(hadc);
+      nextChannelEn = true;
     }
-    else if (adcConversionCount < 10)
-    {
-      accum += HAL_ADC_GetValue(hadc);
-    } else 
-    {
-      accum += HAL_ADC_GetValue(hadc);
-      nextChannelEn = 1;
-    }
-
-    ++adcConversionCount;
 
     if (nextChannelEn)
     {
-      // i can't use a float, due flash size
-      uint32_t lpFilteredValue = 0;
-
-      // lastVal*3
-      // low pass filter - use 3 last values and one new
-      lpFilteredValue = adcValues[adcIndex] * 3;
-        
-      lpFilteredValue = (lpFilteredValue + accum) >> ADC_FILTER_SH;
-
-      adcValues[adcIndex] = lpFilteredValue;
-
-      accum = 0;
-
-      adcConversionCount = 0;
-
       ++adcIndex;
 
       HAL_ADC_Stop(hadc);
@@ -92,11 +99,11 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
         HAL_ADCEx_Calibration_Start(hadc);
       }
 
-      /*select next channel*/
+            /*select next channel*/
       hadc->Instance->CHSELR = adcChannel[adcIndex];
-      /* Clear the old sample time */
+            /* Clear the old sample time */
       hadc->Instance->SMPR &= ~(ADC_SMPR_SMP);
-      /* Set the new sample time */
+            /* Set the new sample time */
       if (currentAdcSpeed != speed)
       {
         speed = currentAdcSpeed;

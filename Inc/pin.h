@@ -37,7 +37,8 @@ void digitalWrite(uint8_t Pin, bool Value);
 void analogWrite(uint8_t Pin, uint16_t Value);
 void portMode(uint16_t Port, PinMode Mode);
 void setAdcSpeed(uint8_t speed);
-
+void adcLowPassFilterSwitcher(bool enable);
+uint16_t adcAsDigitalPortRead(uint16_t treshold);
 /* USER CODE END */
 
 #ifdef __cplusplus

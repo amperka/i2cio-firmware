@@ -37,14 +37,14 @@
 
 #include "gpio.h"
 
-#define DEFAULT_ADC_SPEED 6
+#define DEFAULT_ADC_SPEED 7
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc;
 
-uint32_t adcValues[ADC_COUNT];
+uint16_t adcValues[ADC_COUNT];
 uint32_t adcSpeed[] = {
     ADC_SAMPLETIME_1CYCLE_5       /*!< Sampling time 1.5 ADC clock cycle */
   , ADC_SAMPLETIME_7CYCLES_5      /*!< Sampling time 7.5 ADC clock cycles */
@@ -57,6 +57,8 @@ uint32_t adcSpeed[] = {
 };
 
 uint8_t currentAdcSpeed = DEFAULT_ADC_SPEED;
+bool adcLowPassFilterEnable = true;
+uint16_t adcAsDigitalTreshold = 0x7FF;
 
 /* ADC init function */
 void MX_ADC_Init(void)

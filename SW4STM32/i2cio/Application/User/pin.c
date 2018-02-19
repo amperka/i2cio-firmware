@@ -34,7 +34,8 @@ PinMode getPinMode(uint8_t Pin);
 bool isTimChIntEnable(TIM_HandleTypeDef *htim, uint32_t Channel);
 bool isTimUpdIntEnable(TIM_HandleTypeDef *htim);
 bool isOnlyTimUpdIntEnable(TIM_HandleTypeDef *htim);
-
+uint16_t adcAsDigitalPortRead(uint16_t treshold);
+void adcLowPassFilterSwitcher(bool enable);
 /**
 End of predeclaration
 **/
@@ -56,8 +57,8 @@ void setPwmFreq(uint16_t freq)
 	{
 		if (TimCh[Pin].Htim->Init.Period != (uint16_t)newCounter)
 		{
-    TimCh[Pin].Htim->Init.Period = (uint16_t)newCounter;
-    TimCh[Pin].Htim->Instance->ARR = (uint32_t)TimCh[Pin].Htim->Init.Period;
+		    TimCh[Pin].Htim->Init.Period = (uint16_t)newCounter;
+    		TimCh[Pin].Htim->Instance->ARR = (uint32_t)TimCh[Pin].Htim->Init.Period;
 		}
 	  switch (TimCh[Pin].Channel)
 	  {
@@ -97,8 +98,34 @@ uint16_t analogRead(uint8_t adcChNum)
 		{
 		  setPinMode(adcChNum, AnalogMode);
 	        // we accumulate conversions 8 times, so result will be >> 3
-			result = adcValues[adcChNum] >> 3; // look at adcLoop.c
+			result = adcValues[adcChNum];
+			if (adcLowPassFilterEnable) result >>= 3; // look at adcLoop.c
 		} 
+	return result;
+}
+
+void adcLowPassFilterSwitcher(bool enable){
+	if (enable != adcLowPassFilterEnable) {
+		for (uint8_t i = 0; i < ADC_COUNT; ++i) {
+			enable ? (adcValues[i] <<=3) : (adcValues[i] >>=3);
+		}
+		adcLowPassFilterEnable = enable;
+	}
+}
+
+uint16_t adcAsDigitalPortRead(uint16_t treshold){
+
+	uint16_t result = 0;
+	uint8_t i = ADC_COUNT;
+	while (i)
+	{
+		--i;
+		result <<= 1;
+		if (analogRead(i) >= treshold)
+		{
+			result |= 1;
+		}
+	}
 	return result;
 }
 

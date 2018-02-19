@@ -441,6 +441,31 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
       setAnswerBuf_32(answerBuf, slot);
     }
     break;
+
+    case ADC_LOWPASS_FILTER_ON:
+    {
+      adcLowPassFilterSwitcher(true);
+    }
+    break;
+
+    case ADC_LOWPASS_FILTER_OFF:
+    {
+      adcLowPassFilterSwitcher(false);
+    }
+    break;
+
+    case ADC_AS_DIGITAL_PORT_SET_TRESHOLD:
+    {
+      adcAsDigitalTreshold = concat2U8toU16(commandBuf[1]
+        , commandBuf[2]);
+    }
+    break;
+
+    case ADC_AS_DIGITAL_PORT_READ:
+    {
+      setAnswerBuf_16(answerBuf, adcAsDigitalPortRead(adcAsDigitalTreshold));
+    }
+    break;
   }
 }
 

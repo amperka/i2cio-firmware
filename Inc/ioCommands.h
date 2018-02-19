@@ -203,7 +203,6 @@ enum IOcommand {
       with UID (see GET_MASTER_READED_UID)
       */
 
-// TODO:
     // 0x20 - Advanced ADC functions
     , ADC_LOWPASS_FILTER_ON = 0x20  // command
       /*
@@ -220,21 +219,42 @@ enum IOcommand {
       * arguments   no
       * answer      no
       
-      turning of ADC low pass filter. (TODO: After start device, filter is off)
+      turning of ADC low pass filter.
       */
 
+    , ADC_AS_DIGITAL_PORT_SET_TRESHOLD
+      /*
+      * command     (0x22)
+      * arguments   u16   - treshold
+      * answer      no
+      
+      Set treshold for ADC_AS_DIGITAL_PORT_READ
+      */
+
+    , ADC_AS_DIGITAL_PORT_READ
+      /*
+      * command     (0x23)
+      * arguments   no
+      * answer      u16
+      
+      Return digital value of virtual port 0 from pins analog value. Answer 
+      0b0000000000000101 means analog value on virtual pins 0 and 2 is equal or larger than treshold
+      Not change pin mode
+      */
+  
+// TODO:
 //    , 
     // 0x40 -Advanced PWM functions
-    , ANALOG_WRITE_U8 = 0x40        // 1b in
+    , PWM_ANALOG_WRITE_U8 = 0x40        // 1b in
     // 0x60 -Advanced Digital functions
     // 0x80 -Software interfaces
     // ... 8 groups, 32 commands each
 
     // etc - start at 0xE0
-    , VERSION = 0xE0                // command, 4b answer
-    , ACT_LED_ENABLE                 // command
-    , ACT_LED_DISABLE                // command
-    , ACT_LED_BLINK_WITH_COUNTER // 1b in
+    , ETC_VERSION = 0xE0                // command, 4b answer
+    , ETC_ACT_LED_ENABLE                 // command
+    , ETC_ACT_LED_DISABLE                // command
+    , ETC_ACT_LED_BLINK_WITH_COUNTER // 1b in
 };
 
 uint16_t concat2U8toU16(uint8_t highVal, uint8_t lowVal){
