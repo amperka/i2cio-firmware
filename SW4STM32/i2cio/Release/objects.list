@@ -1,6 +1,7 @@
 "Application/SW4STM32/startup_stm32f030x6.o"
 "Application/User/adc.o"
 "Application/User/adcLoop.o"
+"Application/User/encoder.o"
 "Application/User/gpio.o"
 "Application/User/i2c.o"
 "Application/User/main.o"

@@ -12,7 +12,7 @@
 #include "adc.h"
 
 /* USER CODE BEGIN */
-void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc);
+bool HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc);
 /* USER CODE END */
 
 #ifdef __cplusplus

@@ -42,8 +42,10 @@ volatile uint32_t accum = 0;
 
 
 // try without interrupts. Regular check
-void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
+bool HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
 {
+  bool fullCycle = false;
+
   if (HAL_IS_BIT_SET(hadc->Instance->ISR, ADC_FLAG_EOC))//__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOC))
   {
     bool nextChannelEn = false;
@@ -97,6 +99,7 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
       {
         adcIndex = 0;
         HAL_ADCEx_Calibration_Start(hadc);
+        fullCycle = true;
       }
 
             /*select next channel*/
@@ -112,4 +115,5 @@ void HAL_ADC_ConvCheck(ADC_HandleTypeDef* hadc)
       HAL_ADC_Start(hadc);
     }
   }
+  return fullCycle;
 }

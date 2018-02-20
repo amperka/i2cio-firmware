@@ -39,6 +39,7 @@
 #include "gpio.h"
 #include "pin.h"
 #include "adcLoop.h"
+#include "encoder.h"
 
 /* USER CODE BEGIN Includes */
 #include "ioCommands.h"
@@ -186,8 +187,10 @@ int main(void)
       HAL_I2C_EnableListen_IT(&hi2c1);
     }
 
-    HAL_ADC_ConvCheck(&hadc);
-
+    bool adcFullCycle = HAL_ADC_ConvCheck(&hadc);
+    if (adcFullCycle) {
+      encoderCapture();
+    }
 
   /* USER CODE END WHILE */
 
@@ -464,6 +467,18 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case ADC_AS_DIGITAL_PORT_READ:
     {
       setAnswerBuf_16(answerBuf, adcAsDigitalPortRead(adcAsDigitalTreshold));
+    }
+    break;
+
+    case ENCODER_ADD:
+    {
+      addEncoder(commandBuf[1], commandBuf[2]);
+    }
+    break;
+
+    case ENCODER_GET_DIFF_VALUE:
+    {
+      answerBuf[0] = (uint8_t)getValueEncoder(commandBuf[1]);
     }
     break;
   }

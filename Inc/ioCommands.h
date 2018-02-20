@@ -210,7 +210,7 @@ enum IOcommand {
       * arguments   no
       * answer      no
       
-      turning on ADC low pass filter
+      turning on ADC low pass filter. Default state
       */
 
     , ADC_LOWPASS_FILTER_OFF        // command
@@ -241,13 +241,36 @@ enum IOcommand {
       0b0000000000000101 means analog value on virtual pins 0 and 2 is equal or larger than treshold
       Not change pin mode
       */
-  
+
+      , ENCODER_ADD = 0x30
+      /*
+      * command     (0x30)
+      * arguments   u16 - encoder A, B pin number
+      * answer      
+      
+      Add encoder on argument high byte (A pin) and low byte (B pin) pin number.
+      Encoder can use only analog pins to prevent encoder bounce.
+      4 encoders max
+      */
+
+      , ENCODER_GET_DIFF_VALUE
+      /*
+      * command     (0x31)
+      * arguments   u8 - encoder number
+      * answer      int8_t - diff value
+      
+      Return difference steps after last encoder read.
+      Encoder can use only analog pins to prevent encoder bounce.
+      4 encoders max
+      */
+
 // TODO:
 //    , 
     // 0x40 -Advanced PWM functions
     , PWM_ANALOG_WRITE_U8 = 0x40        // 1b in
     // 0x60 -Advanced Digital functions
     // 0x80 -Software interfaces
+
     // ... 8 groups, 32 commands each
 
     // etc - start at 0xE0
