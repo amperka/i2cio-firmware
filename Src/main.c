@@ -40,8 +40,8 @@
 #include "pin.h"
 #include "adcLoop.h"
 #include "encoder.h"
-
 /* USER CODE BEGIN Includes */
+#include "bufferFunctions.h"
 #include "ioCommands.h"
 #define DEFAULT_I2C_ADDR 42
 #define SLOT (uint32_t)(((uint32_t)'s' << 24) | ((uint32_t)'l' << 16) | ((uint32_t)'o' << 8) | ((uint32_t)'t'))
@@ -316,13 +316,13 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
   uint8_t i = commandBuf[0];
   switch (i) {
 
-    case WHO_AM_I:
+    case UID:
     {
       setAnswerBuf_32(answerBuf, getUID());
     }
     break;
 
-    case RESET_ME:
+    case RESET_SLAVE:
     {
       NVIC_SystemReset();
     }
@@ -425,7 +425,7 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     }
     break;
 
-    case GET_MASTER_READED_UID:
+    case MASTER_READED_UID:
     {
       masterReadedUid = getBufData_32(commandBuf);
     }
