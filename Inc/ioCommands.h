@@ -264,7 +264,7 @@ enum IOcommand {
       4 encoders max
       */
 
-// TODO:
+// TODO: section
 //    , 
     // 0x40 -Advanced PWM functions
     , PWM_ANALOG_WRITE_U8 = 0x40        // 1b in
@@ -279,6 +279,7 @@ enum IOcommand {
     , ETC_ACT_LED_DISABLE                // command
     , ETC_ACT_LED_BLINK_WITH_COUNTER // 1b in
 };
+// section :TODO
 
 uint16_t concat2U8toU16(uint8_t highVal, uint8_t lowVal){
   uint16_t result = highVal;
