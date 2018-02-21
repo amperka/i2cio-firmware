@@ -1,5 +1,5 @@
 /*
-	I2Cadio definitions
+	i2cio definitions
 */
 
 //#define VERSION           "0.1.0"

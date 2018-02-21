@@ -1,5 +1,5 @@
 /*
-    I2Cadio commands.
+    i2cio commands.
     https://github.com/acosinwork/I2Cadio-firmware/
 
 */
