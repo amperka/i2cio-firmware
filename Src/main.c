@@ -42,7 +42,7 @@
 #include "encoder.h"
 /* USER CODE BEGIN Includes */
 #include "bufferFunctions.h"
-#include "ioCommands.h"
+#include "i2cioCommands.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/

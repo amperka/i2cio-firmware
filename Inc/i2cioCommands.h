@@ -1,6 +1,6 @@
 /*
     i2cio commands.
-    https://github.com/acosinwork/I2Cadio-firmware/
+    https://github.com/acosinwork/i2cio-firmware/
 
 */
 enum IOcommand {
