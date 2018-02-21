@@ -279,5 +279,7 @@ enum IOcommand {
     , ETC_ACT_LED_ENABLE                 // command
     , ETC_ACT_LED_DISABLE                // command
     , ETC_ACT_LED_BLINK_WITH_COUNTER // 1b in
+    , ETC_NUM_DIGITAL_PINS
+    , ETC_NUM_ANALOG_INPUTS
 };
 // section :TODO
