@@ -243,14 +243,13 @@ enum IOcommand {
       Not change pin mode
       */
 
-      , ENCODER_ADD = 0x30
+      , ENCODER_SET_PINS = 0x30
       /*
       * command     (0x30)
-      * arguments   u16 - encoder A, B pin number
+      * arguments   u8 - encoder nummber, u8 - encoder A<<4|B pin number
       * answer      
       
-      Add encoder on argument high byte (A pin) and low byte (B pin) pin number.
-      Encoder can use only analog pins to prevent encoder bounce.
+      Add encoder on A and B pins, packed on u8.
       4 encoders max
       */
 
@@ -261,7 +260,6 @@ enum IOcommand {
       * answer      int8_t - diff value
       
       Return difference steps after last encoder read.
-      Encoder can use only analog pins to prevent encoder bounce.
       4 encoders max
       */
 

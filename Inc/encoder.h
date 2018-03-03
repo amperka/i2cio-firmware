@@ -22,7 +22,8 @@
 
 #define MAX_ENCODER_COUNT 4
 
-void addEncoder(uint8_t pinA, uint8_t pinB);
+void initEncoders();
+void setEncoderPins(uint8_t encoder, uint8_t pinA, uint8_t pinB);
 int8_t getValueEncoder(uint8_t encoder);
 void encoderCapture();
 /* USER CODE END */

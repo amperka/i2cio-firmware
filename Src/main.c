@@ -59,6 +59,7 @@
   void SystemClock_Config(void);
   void Error_Handler(void);
   static void MX_NVIC_Init(void);
+  static inline void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -125,12 +126,13 @@ int main(void)
 
   HAL_ADC_Start(&hadc);
 
+  initEncoders();
+
   // boot indication^
   bool dig = false;
   uint8_t bootPwmFreqCounter = 0;
   uint8_t bootPwmCounter = 0;
   uint8_t timeCounter = 0;
-
   uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
@@ -185,10 +187,8 @@ int main(void)
       HAL_I2C_EnableListen_IT(&hi2c1);
     }
 
-    bool adcFullCycle = HAL_ADC_ConvCheck(&hadc);
-    if (adcFullCycle) {
-      encoderCapture();
-    }
+    HAL_ADC_ConvCheck(&hadc);
+    encoderCapture();
 
   /* USER CODE END WHILE */
 
@@ -309,7 +309,7 @@ void saveI2CAddress(uint8_t address) {
   HAL_FLASH_OB_Launch();
 }
 
-void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
+static inline void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
 
   uint8_t i = commandBuf[0];
   switch (i) {
@@ -468,9 +468,9 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     }
     break;
 
-    case ENCODER_ADD:
+    case ENCODER_SET_PINS:
     {
-      addEncoder(commandBuf[1], commandBuf[2]);
+      setEncoderPins(commandBuf[1], ((commandBuf[2] >> 4) & 0x0f), (commandBuf[2] & 0x0f));
     }
     break;
 
