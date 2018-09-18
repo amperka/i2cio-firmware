@@ -1,20 +1,21 @@
-#define TEMP_SENSOR_CALIB_VAL_ADDR 0x1FFFF7B8U
+/*
+    i2cio commands.
+    https://github.com/acosinwork/i2cio-firmware/
 
-uint32_t getUID(void);
-
+*/
 enum IOcommand {
   // Basic functions
-      WHO_AM_I = 0x00
+      UID = 0x00
       /*
       * command     (0x00)
       * argument    no
       * answer      u32
       
-      Return 32 bit unic id stm32f030f4p6
+      Return 32 bit unic id stm32f030f4p6 (UID)
       (temperature and analog reference calibration values)
       */
 
-    , RESET_ME
+    , RESET_SLAVE
       /*
       * command     (0x01)
       * argument    no
@@ -171,16 +172,16 @@ enum IOcommand {
       7: Sampling time 239.5 ADC clock cycles
       */
 
-    , GET_MASTER_READED_UID
+    , MASTER_READED_UID
       /*
       * command     (0x0F)
       * arguments   u32   - UID
       * answer      no
 
       When many I2Cadio devices have the same I2C address, I2C master can read UID of devices
-      with this address (WHO_AM_I command). Only one device can send correct UID 
+      with this address (UID command). Only one device can send correct UID 
       (smallest UID. See I2C arbitration). To set new addres on that device, I2C master must
-      send readed UID to I2C slaves with command GET_MASTER_READED_UID. If UID is belongs to slave,
+      send readed UID to I2C slaves with command MASTER_READED_UID. If UID is belongs to slave,
       that slave device can change i2c address with the command CHANGE_I2C_ADDR_IF_UID_OK
       */
 
@@ -190,7 +191,7 @@ enum IOcommand {
       * arguments   u8   - new I2C address
       * answer      no
 
-      Set new I2C address on slave device, if slave recieve his UID on GET_MASTER_READED_UID command
+      Set new I2C address on slave device, if slave recieve his UID on MASTER_READED_UID command
       */
 
     , SAY_SLOT
@@ -200,7 +201,7 @@ enum IOcommand {
       * answer      u32   - "slot"
 
       Command to identify of I2Cadio device on I2C address. If slave answer is "slot", then we can addressing it
-      with UID (see GET_MASTER_READED_UID)
+      with UID (see MASTER_READED_UID)
       */
 
     // 0x20 - Advanced ADC functions
@@ -210,7 +211,7 @@ enum IOcommand {
       * arguments   no
       * answer      no
       
-      turning on ADC low pass filter
+      turning on ADC low pass filter. Default state
       */
 
     , ADC_LOWPASS_FILTER_OFF        // command
@@ -241,13 +242,34 @@ enum IOcommand {
       0b0000000000000101 means analog value on virtual pins 0 and 2 is equal or larger than treshold
       Not change pin mode
       */
-  
-// TODO:
+
+      , ENCODER_SET_PINS = 0x30
+      /*
+      * command     (0x30)
+      * arguments   u8 - encoder nummber, u8 - encoder A<<4|B pin number
+      * answer      
+      
+      Add encoder on A and B pins, packed on u8.
+      4 encoders max
+      */
+
+      , ENCODER_GET_DIFF_VALUE
+      /*
+      * command     (0x31)
+      * arguments   u8 - encoder number
+      * answer      int8_t - diff value
+      
+      Return difference steps after last encoder read.
+      4 encoders max
+      */
+
+// TODO: section
 //    , 
     // 0x40 -Advanced PWM functions
     , PWM_ANALOG_WRITE_U8 = 0x40        // 1b in
     // 0x60 -Advanced Digital functions
     // 0x80 -Software interfaces
+
     // ... 8 groups, 32 commands each
 
     // etc - start at 0xE0
@@ -255,39 +277,7 @@ enum IOcommand {
     , ETC_ACT_LED_ENABLE                 // command
     , ETC_ACT_LED_DISABLE                // command
     , ETC_ACT_LED_BLINK_WITH_COUNTER // 1b in
+    , ETC_NUM_DIGITAL_PINS
+    , ETC_NUM_ANALOG_INPUTS
 };
-
-uint16_t concat2U8toU16(uint8_t highVal, uint8_t lowVal){
-  uint16_t result = highVal;
-  result <<= 8;
-  result |= lowVal;
-  return result;
-}
-
-void setAnswerBuf_16(uint8_t *answerBuf, uint16_t val){
-  answerBuf[1] = val & (uint8_t)0xFF;
-  val >>= 8;
-  answerBuf[0] = val & (uint8_t)0xFF;
-}
-
-void setAnswerBuf_32(uint8_t *answerBuf, uint32_t val){
-  answerBuf[3] = val & (uint8_t)0xFF;
-  val >>= 8;
-  answerBuf[2] = val & (uint8_t)0xFF;
-  val >>= 8;
-  answerBuf[1] = val & (uint8_t)0xFF;
-  val >>= 8;
-  answerBuf[0] = val & (uint8_t)0xFF;
-}
-
-uint32_t getBufData_32(uint8_t *dataBuf){
-  uint32_t result = dataBuf[4] | (dataBuf[3]<<8) | (dataBuf[2]<<16) | (dataBuf[1]<<24);
-  return result;
-}
-
-uint32_t getUID(){
-  uint32_t result;
-  uint32_t* calibVal = (uint32_t*)TEMP_SENSOR_CALIB_VAL_ADDR;
-  result = *calibVal;
-  return  result;
-}
+// section :TODO

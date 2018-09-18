@@ -38,15 +38,12 @@
 /* USER CODE BEGIN Includes */
 
 #include <stdbool.h>
-
+#include "definitions.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-#define GPIO_COUNT 10
-#define ADC_COUNT  9
-#define ADC_SPEED_COUNT  8
 
 #define P0_T3C4_H_Pin GPIO_PIN_1
 #define P1_T17C1_H_Pin GPIO_PIN_7

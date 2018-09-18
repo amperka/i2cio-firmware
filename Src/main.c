@@ -39,11 +39,10 @@
 #include "gpio.h"
 #include "pin.h"
 #include "adcLoop.h"
-
+#include "encoder.h"
 /* USER CODE BEGIN Includes */
-#include "ioCommands.h"
-#define DEFAULT_I2C_ADDR 42
-#define SLOT (uint32_t)(((uint32_t)'s' << 24) | ((uint32_t)'l' << 16) | ((uint32_t)'o' << 8) | ((uint32_t)'t'))
+#include "bufferFunctions.h"
+#include "i2cioCommands.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -60,6 +59,7 @@
   void SystemClock_Config(void);
   void Error_Handler(void);
   static void MX_NVIC_Init(void);
+  static inline void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -126,12 +126,13 @@ int main(void)
 
   HAL_ADC_Start(&hadc);
 
+  initEncoders();
+
   // boot indication^
   bool dig = false;
   uint8_t bootPwmFreqCounter = 0;
   uint8_t bootPwmCounter = 0;
   uint8_t timeCounter = 0;
-
   uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
@@ -187,7 +188,7 @@ int main(void)
     }
 
     HAL_ADC_ConvCheck(&hadc);
-
+    encoderCapture();
 
   /* USER CODE END WHILE */
 
@@ -308,18 +309,18 @@ void saveI2CAddress(uint8_t address) {
   HAL_FLASH_OB_Launch();
 }
 
-void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
+static inline void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
 
   uint8_t i = commandBuf[0];
   switch (i) {
 
-    case WHO_AM_I:
+    case UID:
     {
       setAnswerBuf_32(answerBuf, getUID());
     }
     break;
 
-    case RESET_ME:
+    case RESET_SLAVE:
     {
       NVIC_SystemReset();
     }
@@ -422,7 +423,7 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     }
     break;
 
-    case GET_MASTER_READED_UID:
+    case MASTER_READED_UID:
     {
       masterReadedUid = getBufData_32(commandBuf);
     }
@@ -464,6 +465,18 @@ void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf){
     case ADC_AS_DIGITAL_PORT_READ:
     {
       setAnswerBuf_16(answerBuf, adcAsDigitalPortRead(adcAsDigitalTreshold));
+    }
+    break;
+
+    case ENCODER_SET_PINS:
+    {
+      setEncoderPins(commandBuf[1], ((commandBuf[2] >> 4) & 0x0f), (commandBuf[2] & 0x0f));
+    }
+    break;
+
+    case ENCODER_GET_DIFF_VALUE:
+    {
+      answerBuf[0] = (uint8_t)getValueEncoder(commandBuf[1]);
     }
     break;
   }
