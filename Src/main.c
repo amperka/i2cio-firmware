@@ -66,6 +66,7 @@
   uint8_t getI2CAddress(void);
   void saveI2CAddress(uint8_t address);
   void prepareAnswer(uint8_t *commandBuf, uint8_t *answerBuf);
+  static inline void builtInLedFader();
 
   uint8_t addr;
   uint8_t recieveMessageFlag = 0;
@@ -128,51 +129,13 @@ int main(void)
 
   initEncoders();
 
-  // boot indication^
-  bool dig = false;
-  uint8_t bootPwmFreqCounter = 0;
-  uint8_t bootPwmCounter = 0;
-  uint8_t timeCounter = 0;
-  uint32_t lastTick = HAL_GetTick();
   while (!recieveMessageFlag)
   {
     HAL_ADCEx_Calibration_Start(&hadc);
     // we need prepare ADC before extern microcontroller
     HAL_ADC_ConvCheck(&hadc);
-
-    if (HAL_GetTick() != lastTick) {
-      ++bootPwmFreqCounter;
-      if (bootPwmFreqCounter > 15)
-      {
-        bootPwmFreqCounter = 0;
-        ++ timeCounter;
-        if (timeCounter > 2)
-        {
-          timeCounter = 0;
-          if ((bootPwmCounter > 9) || (bootPwmCounter < 1))
-          {
-            dig = !dig;
-          }
-          if (dig)
-            ++bootPwmCounter;
-          else
-            --bootPwmCounter;
-        }
-      }
-      if (bootPwmFreqCounter > bootPwmCounter)
-        LED1_GPIO_Port->BRR |= LED1_Pin;
-      else
-        LED1_GPIO_Port->BSRR |= LED1_Pin;
-
-      //HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-      lastTick = HAL_GetTick();
-    }
+    builtInLedFader();
   }
-
-// reset led on complit callback, so yagni:
-//  digitalWritePort(LED_MASK, false);
-
-//  GPIOF->BRR |= GPIO_PIN_1;
 
   /* USER CODE END 2 */
 
@@ -278,6 +241,44 @@ static void MX_NVIC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+static inline void builtInLedFader()
+{
+  // boot indication^
+  static bool dig = false;
+  static uint8_t bootPwmFreqCounter = 0;
+  static uint8_t bootPwmCounter = 0;
+  static uint8_t timeCounter = 0;
+  static uint32_t lastTick = 0;
+
+  if (HAL_GetTick() != lastTick) {
+    ++bootPwmFreqCounter;
+    if (bootPwmFreqCounter > 15)
+    {
+      bootPwmFreqCounter = 0;
+      ++ timeCounter;
+      if (timeCounter > 2)
+      {
+        timeCounter = 0;
+        if ((bootPwmCounter > 9) || (bootPwmCounter < 1))
+        {
+          dig = !dig;
+        }
+        if (dig)
+          ++bootPwmCounter;
+        else
+          --bootPwmCounter;
+      }
+    }
+    if (bootPwmFreqCounter > bootPwmCounter)
+      LED1_GPIO_Port->BRR |= LED1_Pin;
+    else
+      LED1_GPIO_Port->BSRR |= LED1_Pin;
+
+    lastTick = HAL_GetTick();
+  }
+}
+
 uint8_t getI2CAddress(void)
 {
   uint8_t result = HAL_FLASHEx_OBGetUserData(OB_DATA_ADDRESS_DATA0);
