@@ -151,7 +151,7 @@ int main(void)
     }
 
     HAL_ADC_ConvCheck(&hadc);
-    encoderCapture();
+//    encoderCapture();
 
   /* USER CODE END WHILE */
 
