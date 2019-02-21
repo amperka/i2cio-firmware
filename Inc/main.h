@@ -38,6 +38,8 @@
 /* USER CODE BEGIN Includes */
 
 #include <stdbool.h>
+
+#include <stdint.h>
 #include "definitions.h"
 /* USER CODE END Includes */
 
@@ -69,6 +71,12 @@
 #define P8_T3C2_GPIO_Port GPIOA
 #define LED1_GPIO_Port GPIOF
 #define P9_T3C3_GPIO_Port GPIOF
+
+extern inline void setPullups(uint32_t pulls);
+volatile uint8_t pwmWidth;
+volatile uint8_t pwmValue;
+volatile uint32_t pullBotom;
+volatile uint32_t pullTop;
 /* USER CODE END Private defines */
 
 /**

@@ -57,12 +57,12 @@ void MX_TIM1_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = BASE_PRESCALER;
+  htim1.Init.Prescaler = 15;//BASE_PRESCALER;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = INIT_PERIOD;
+  htim1.Init.Period = 64;//INIT_PERIOD;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
@@ -331,9 +331,9 @@ void MX_TIM17_Init(void)
   TIM_OC_InitTypeDef Cfg;
 
   htim17.Instance = TIM17;
-  htim17.Init.Prescaler = BASE_PRESCALER;
+  htim17.Init.Prescaler = 0;
   htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim17.Init.Period = INIT_PERIOD;
+  htim17.Init.Period = 65535;
   htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim17.Init.RepetitionCounter = 0;
   htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;

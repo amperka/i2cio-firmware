@@ -34,6 +34,8 @@
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx.h"
 #include "stm32f0xx_it.h"
+#include "main.h"
+
 
 /* USER CODE BEGIN 0 */
 
@@ -119,17 +121,17 @@ void ADC1_IRQHandler(void)
 */
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 {
+  /*
   uint32_t statusReg = htim1.Instance->SR;
   uint32_t interruptEnableReg = htim1.Instance->DIER;
 
   if ((interruptEnableReg & TIM_IT_UPDATE) && (statusReg & TIM_FLAG_UPDATE))
   {
-
+*/
     __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
-    GPIO[3].Port->BSRR = TimCh[5].SwPwmPinMask
-                       | TimCh[4].SwPwmPinMask
-                       | TimCh[3].SwPwmPinMask;
-  }
+    setPullups(pullBotom);
+    TimCh[3].Htim->Instance->CCR1 = pwmValue;
+//  }
 }
 
 /**
@@ -137,40 +139,19 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 */
 void TIM1_CC_IRQHandler(void)
 {
+  /*
   uint32_t interruptEnableReg = htim1.Instance->DIER;
-
-  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC4) != RESET)
-  {
-    if (interruptEnableReg & TIM_IT_CC4)
-    {
-      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC4);  
-      //P5_T1C4_Pin
-      GPIO[5].Port->BRR = TimCh[5].SwPwmPinMask;
-      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-    }
-  }
-
-  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC2) != RESET)
-  {
-    if (interruptEnableReg & TIM_IT_CC2)
-    {
-      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC2);  
-      //P4_T1C2_Pin
-      GPIO[4].Port->BRR = TimCh[4].SwPwmPinMask;
-      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-    }
-  }
 
   if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC1) != RESET)
   {
     if (interruptEnableReg & TIM_IT_CC1)
     {
+      */
       __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC1);  
       //P3_T1C1_Pin
-      GPIO[3].Port->BRR = TimCh[3].SwPwmPinMask;
-      htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-    }
-  }
+      setPullups(pullTop);
+//    }
+//  }
 }
 
 /**
