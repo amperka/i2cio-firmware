@@ -47,6 +47,9 @@
 #define TIM_TICK_FREQ  CORE_CLOCK/(BASE_PRESCALER + 1)
 #define INIT_PERIOD    2000U // = 1kHz
 
+#define KHZ46    1023U // = 1kHz
+
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */

@@ -121,17 +121,9 @@ void ADC1_IRQHandler(void)
 */
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 {
-  /*
-  uint32_t statusReg = htim1.Instance->SR;
-  uint32_t interruptEnableReg = htim1.Instance->DIER;
-
-  if ((interruptEnableReg & TIM_IT_UPDATE) && (statusReg & TIM_FLAG_UPDATE))
-  {
-*/
-    __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
-    setPullups(pullBotom);
-    TimCh[3].Htim->Instance->CCR1 = pwmValue;
-//  }
+  setPullups(pullTop);
+  TimCh[3].Htim->Instance->CCR1 = pwmValue;
+  __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
 }
 
 /**
@@ -139,19 +131,8 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 */
 void TIM1_CC_IRQHandler(void)
 {
-  /*
-  uint32_t interruptEnableReg = htim1.Instance->DIER;
-
-  if (__HAL_TIM_GET_FLAG(&htim1, TIM_FLAG_CC1) != RESET)
-  {
-    if (interruptEnableReg & TIM_IT_CC1)
-    {
-      */
-      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC1);  
-      //P3_T1C1_Pin
-      setPullups(pullTop);
-//    }
-//  }
+  setPullups(pullBottom);
+  __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_CC1);
 }
 
 /**
@@ -159,39 +140,18 @@ void TIM1_CC_IRQHandler(void)
 */
 void TIM3_IRQHandler(void)
 {
-
+/*
   uint32_t statusReg = htim3.Instance->SR;
   uint32_t interruptEnableReg = htim3.Instance->DIER;
 
   if ((interruptEnableReg & TIM_IT_UPDATE) && (statusReg & TIM_FLAG_UPDATE))
   {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE);
-    GPIO[9].Port->BSRR = TimCh[9].SwPwmPinMask;
-    GPIO[6].Port->BSRR = TimCh[8].SwPwmPinMask
-                       | TimCh[6].SwPwmPinMask;
-  }
+    */
 
-  if ((interruptEnableReg & TIM_IT_CC3) && (statusReg & TIM_FLAG_CC3))
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC3);  
-    //P9_T3C3_Pin
-    GPIO[9].Port->BRR = TimCh[9].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if ((interruptEnableReg & TIM_IT_CC2) && (statusReg & TIM_FLAG_CC2))
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC2);  
-    //P8_T3C2_Pin
-    GPIO[8].Port->BRR = TimCh[8].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
-  if ((interruptEnableReg & TIM_IT_CC1) && (statusReg & TIM_FLAG_CC1))
-  {
-    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC1);  
-    //P6_T3C1_Pin
-    GPIO[6].Port->BRR = TimCh[6].SwPwmPinMask;
-    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-  }
+    TimCh[3].Htim->Init.Period = pwmWidth;
+    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE);
+    increment++;//=KHZ46+1;
+//  }
 }
 
 /**

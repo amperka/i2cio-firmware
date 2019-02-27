@@ -177,12 +177,13 @@ static inline uint16_t pwmValTo14Bit(uint16_t val, uint8_t bottomNumber) {
   return result;
 }
 
-volatile uint32_t pullBotom = 0;
+volatile uint32_t pullBottom = 0;
 volatile uint32_t pullTop = 0;
-volatile uint16_t sectorWidth = SECTOR_WIDTH;
-volatile uint16_t sectorValue = 0;
+uint16_t sectorWidth = SECTOR_WIDTH;
+uint16_t sectorValue = 0;
 volatile uint8_t pwmWidth = 0;
 volatile uint8_t pwmValue = 0;
+volatile uint16_t increment = 0;
 
 static inline void findPullups(uint16_t value) {
   uint16_t bottom = 0;
@@ -209,17 +210,16 @@ static inline void findPullups(uint16_t value) {
     top = pullupsVal[i+1];
     if (bottom < value) {
       if (top >= value) {
-        pullBotom = (uint32_t)pullups[i];
+        pullBottom = (uint32_t)pullups[i];
         pullTop = (uint32_t)pullups[i+1];
         bottomNumber = i;
       }
     }
   }
-  //sectorWidth = top - bottom;
-  value = value - bottom;
+
+  value = value - pullupsVal[bottomNumber];
   sectorValue = pwmValTo14Bit(value, bottomNumber);
   sectorWidth = SECTOR_WIDTH;
-  //sectorWidth = 8192;
 }
 
 static inline bool reduceEdge(){
@@ -236,15 +236,8 @@ static inline bool reduceEdge(){
 
 
 static inline bool to64(){
-//  bool result = false;
-//  uint16_t leftEdgeValue = LEFT_EDGE << 7; // 2/64 to 8192
-//  uint16_t rightEdgeValue = 8192 - (RIGHT_EDGE<<7); // 62/64 to 8192
-//  if (sectorValue <= leftEdgeValue || sectorValue >= rightEdgeValue) {
     pwmWidth=sectorWidth>>7;
     pwmValue=sectorValue>>7;
-//    result = true;
-//  }
-//  return result;
 }
 
 static inline void reduceFraction() {
@@ -271,11 +264,8 @@ static inline void findFraction(uint8_t depth, uint8_t maxDivider) {
     currentDepth++;
     m = a + c;
     n = b + d;
-      //TimCh[1].Htim->Instance->CNT = 0;
 
     bool goRight = (uint32_t)sectorValue * (uint32_t)n < (uint32_t)sectorWidth * (uint32_t)m;
-
-      //INSTRUCTIONCOUNTER = TimCh[1].Htim->Instance->CNT;
 
     if (n >= maxDivider) break;
     if (goRight) {
@@ -335,10 +325,6 @@ static inline void setPwm(uint16_t value){
     reduceFraction();
     findFraction(DEPTH, MAX_DIVIDER);
   }
-
- // TimCh[3].Htim->Instance->ARR = sectorWidth;
-  TimCh[3].Htim->Init.Period = pwmWidth;
-  //TimCh[3].Htim->Instance->CCR1 = sectorValue;
 }
 
 /* USER CODE END 0 */
@@ -377,41 +363,33 @@ static inline void setPwm(uint16_t value){
     HAL_I2C_EnableListen_IT(&hi2c1);
 
     HAL_ADC_Start(&hadc);
-/*
-    while (!recieveMessageFlag)
-    {
-      HAL_ADCEx_Calibration_Start(&hadc);
-    // we need prepare ADC before extern microcontroller
-      HAL_ADC_ConvCheck(&hadc);
-      builtInLedFader();
-    }
-*/
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    // timeOperationsCounter
-        HAL_TIM_PWM_Start(TimCh[1].Htim
-                       , TimCh[1].Channel);
+
+  HAL_TIM_Base_Start_IT(TimCh[0].Htim);
+
+  //counter
+  HAL_TIM_Base_Start(TimCh[1].Htim);
+
+    setPwmMode(3);
+
+    TimCh[3].Htim->Instance->CCR1 = 32;
 
 
-//    setPwmMode(3);
-//    TimCh[3].Htim->Instance->ARR = 64;
-//    TimCh[3].Htim->Instance->CCR1 = 32;
-
-
-    uint16_t increment = 0;
     uint16_t mul=0;
     uint16_t loud=0;
-//setPwm(3450);
-      uint8_t shr = 5;
-
+    uint8_t shr = 5;
+    uint16_t lastIncr = 0;
 
       
     while (1)
     {
 //      if (!increment) mul = (mul+10);
 //      increment+=512;//1512;
+/*
       loud--;
       mul++;
       uint16_t i = 0;
@@ -426,91 +404,31 @@ static inline void setPwm(uint16_t value){
         }
         mul = 0;
       }
-
-      TimCh[1].Htim->Instance->CNT = 0;
-
-      int16_t sinValue_1 = sin16_C(increment);
-
-      INSTRUCTIONCOUNTER = TimCh[1].Htim->Instance->CNT;
-
-
-
-//      int16_t sinValue_1 = sin16_C(increment);
-      
-
-
-      int16_t sinValue_2 = sin16_C(increment*2);
-      int16_t sinValue_3 = sin16_C(increment*5);
-      int16_t sinValue_4 = sin16_C(increment*7);
-      int16_t sinValue_5 = sin16_C(increment*11);
-    //  int32_t curVal = (int32_t)sinValue_1;
-    /*mul;/* + (int32_t)sinValue_4*mul;/*+
-      (int32_t)sinValue_3*mul*3 +  (int32_t)sinValue_4*mul*2 +  (int32_t)sinValue_5*mul;
-      */
-//      uint32_t val32 = curVal/2 + 4294967295/2;
-
-//      int32_t sinValue = sin16_C(increment+sin16_C(mul)*7) + sin16_C(mul*11+increment*5)/5 + sin16_C(sin16_C(mul)*mul*2+increment*3)/4 + sin16_C(sin16_C(mul)+32767)/10;
-
-      uint16_t data1 = (sinValue_3>>shr)+sinValue_1/2 + 32767;//val32>>16; //sinValue/2 + 32767;
-      uint16_t data2 = sinValue_1/2 + 32767;//val32>>16; //sinValue/2 + 32767;
-
-      uint32_t val32 = data2*loud+32767*(65535-loud);
-
-      uint16_t val = val32>>16;
-
-    //  setPwm(data);
-      findPullups(val);
-
-//      TimCh[1].Htim->Instance->CNT = 0;
-
-setPwm(data2);
-
-//      INSTRUCTIONCOUNTER = TimCh[1].Htim->Instance->CNT;
-
-
-      if (val>32767) {
-        uint32_t pull_tmp = pullBotom;
-        pullBotom = pullTop;
-        pullTop = pull_tmp;
-      }
-
-      to64();
-//      setPwm(data2);
-
-      TimCh[3].Htim->Instance->CCR1 = pwmValue;
-//      reduceFraction();
-//      findFraction(10, 64);
-//      setPullups(pullBotom);
-      //  HAL_Delay(1);
-
-//HAL_Delay(1);
-    
-
-
- /*
-      if (recieveMessageFlag)
-      {
-        prepareAnswer(aRxBuffer, aTxBuffer);
-        recieveMessageFlag = 0;
-        HAL_I2C_EnableListen_IT(&hi2c1);
-      }
-
-      HAL_ADC_ConvCheck(&hadc);
-//    encoderCapture();
 */
-      /*
-      for (int i =0; i< P_SIZE; ++i){
-        setPullups(pullups[i]);
-        HAL_Delay(1);
+//      TimCh[1].Htim->Instance->CNT = 0;
+#define MIN_FREQ (uint16_t)(65.41/0.7152557373046875)
+
+      if (lastIncr!=increment){
+          mul+=1024;
+          lastIncr=increment;
+                    uint32_t mul_1 = sin16_C(increment*8) + 32767;
+          uint32_t sinValue_1 = sin16_C(increment*MIN_FREQ) + 32767;
+          uint32_t sinValue_2 = sin16_C(increment*mul_1) + 32767;
+          uint32_t sinValue_3 = sin16_C(increment*615<<1) + 32767;
+          uint32_t sinValue_4 = sin16_C(increment*732) + 32767;
+
+//          uint32_t mul_1 = sin16_C(increment*8) + 32767;
+          uint32_t mul_2 = sin16_C(increment + 65536/4) + 32767;
+          uint32_t mul_3 = sin16_C(increment+2*65536/4) + 32767;
+          uint32_t mul_4 = sin16_C(increment+3*65536/4) + 32767;
+          
+          uint16_t data2 = (sinValue_1*mul_1/2 + sinValue_2*mul_2/2 + sinValue_3*mul_3/2 + sinValue_4*mul_4/2)>>16;
+          setPwm(data2);
       }
-      */
-
-
 
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
     }
   /* USER CODE END 3 */
 

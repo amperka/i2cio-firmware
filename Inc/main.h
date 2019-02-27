@@ -75,8 +75,9 @@
 extern inline void setPullups(uint32_t pulls);
 volatile uint8_t pwmWidth;
 volatile uint8_t pwmValue;
-volatile uint32_t pullBotom;
+volatile uint32_t pullBottom;
 volatile uint32_t pullTop;
+volatile uint16_t increment;
 /* USER CODE END Private defines */
 
 /**
