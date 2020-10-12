@@ -61,19 +61,20 @@ static inline bool detect(bool x1, bool x2, bool y1, bool y2)
 	return (x2 ^ y1) & ~(x1 ^ y2);
 }
 
+#define CHANGED(STATE) 		(((encoders[i].STATE & 1) != (int)STATE))
+#define ADD_STATE(STATE)	encoders[i].STATE = ((encoders[i].STATE<< 1) | (int)STATE) & 0xf
+
 void encoderCapture() {
 	for (uint8_t i = 0; i < MAX_ENCODER_COUNT; ++i){
-		if (encoders[i].enabled){
-			bool stateA = pinState(encoders[i].pinA);
-			bool stateB = pinState(encoders[i].pinB);
-			if(((encoders[i].stateA & 1) != (int)stateA) || ((encoders[i].stateB & 1) != (int)stateB)) { // если состояние изменилось
-				encoders[i].stateA = ((encoders[i].stateA << 1) | (int)stateA) & 0xf; // записать новое состояние в буфер состояний
-				encoders[i].stateB = ((encoders[i].stateB << 1) | (int)stateB) & 0xf; //
-				if(encoders[i].stateA == 6 && encoders[i].stateB == 3) // цифры 3 и 6 это битовые шаблоны соответствующих состояний
-					encoders[i].unreadedValue++;
-				if(encoders[i].stateA == 3 && encoders[i].stateB == 6)
-					encoders[i].unreadedValue--;
-			}
+		bool stateA = pinState(encoders[i].pinA);
+		bool stateB = pinState(encoders[i].pinB);
+		if (CHANGED(stateA) || CHANGED(stateB)) {
+			ADD_STATE(stateA);
+			ADD_STATE(stateB);
+			if(encoders[i].stateA == 0b00001001 && encoders[i].stateB == 0b00001100)
+				encoders[i].unreadedValue++;
+			if(encoders[i].stateA == 0b00001100 && encoders[i].stateB == 0b00001001)
+				encoders[i].unreadedValue--;
 		}
 	}
 }
