@@ -56,11 +56,6 @@ int8_t getValueEncoder(uint8_t encoder){
 	return result;
 }
 
-static inline bool detect(bool x1, bool x2, bool y1, bool y2) 
-{
-	return (x2 ^ y1) & ~(x1 ^ y2);
-}
-
 #define CHANGED(STATE) 		(((encoders[i].STATE & 1) != (int)STATE))
 #define ADD_STATE(STATE)	encoders[i].STATE = ((encoders[i].STATE<< 1) | (int)STATE) & 0xf
 
