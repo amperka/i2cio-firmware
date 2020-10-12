@@ -56,16 +56,17 @@ int8_t getValueEncoder(uint8_t encoder){
 	return result;
 }
 
-#define CHANGED(STATE) 		(((encoders[i].STATE & 1) != (int)STATE))
-#define ADD_STATE(STATE)	encoders[i].STATE = ((encoders[i].STATE<< 1) | (int)STATE) & 0xf
-
 void encoderCapture() {
 	for (uint8_t i = 0; i < MAX_ENCODER_COUNT; ++i){
 		bool stateA = pinState(encoders[i].pinA);
+		bool stateAChanged = (encoders[i].stateA & 1) != (int)stateA;
 		bool stateB = pinState(encoders[i].pinB);
-		if (CHANGED(stateA) || CHANGED(stateB)) {
-			ADD_STATE(stateA);
-			ADD_STATE(stateB);
+		bool stateBChanged = (encoders[i].stateB & 1) != (int)stateB;
+
+		if (stateAChanged || stateBChanged) {
+			encoders[i].stateA = ((encoders[i].stateA << 1) | (int)stateA) & 0xf;
+			encoders[i].stateB = ((encoders[i].stateB << 1) | (int)stateB) & 0xf;
+
 			if(encoders[i].stateA == 0b00001001 && encoders[i].stateB == 0b00001100)
 				encoders[i].unreadedValue++;
 			if(encoders[i].stateA == 0b00001100 && encoders[i].stateB == 0b00001001)
