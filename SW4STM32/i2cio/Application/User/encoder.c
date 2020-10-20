@@ -14,7 +14,7 @@ typedef struct
   uint8_t pinB;
   int8_t unreadedValue;
   uint8_t stateA; //
-  uint8_t stateB; // эти переменные используются в качестве 4 битного буфера предыдущих состояний
+  uint8_t stateB; // these are 4-bit buffers of the prev state
 } Encoder_Type;
 
 static Encoder_Type encoders[MAX_ENCODER_COUNT];
